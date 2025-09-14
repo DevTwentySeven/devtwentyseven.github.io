@@ -2,55 +2,73 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=0.3">
-  <title>Dev Twenty Seven</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crypto Projects Hub</title>
   <style>
-    /* Fundo escuro e estilo hacker */
-    body {
-      margin: 0;
-      font-family: 'Courier New', Courier, monospace;
+    /* Reset e fundo full screen */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
       background-color: #0b0b0b;
+      font-family: 'Courier New', Courier, monospace;
       color: #00ff00;
+    }
+
+    /* Canvas Matrix */
+    canvas#matrix {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+
+    /* Conteúdo central */
+    .content {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
       text-align: center;
-      overflow-x: hidden;
+      padding: 2rem;
     }
 
-    /* Título principal com brilho pulsante */
     h1#main-header {
-      font-size: 3rem;
-      margin-bottom: 0.5rem;
+      font-size: 4rem;
       color: #00ff00;
-      text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 40px #00ff00;
+      text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 30px #00ff99;
       animation: glow 1.5s infinite alternate;
     }
 
     @keyframes glow {
       from { text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00, 0 0 20px #00ff00; }
-      to { text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 40px #00ff00, 0 0 80px #00ff00; }
+      to { text-shadow: 0 0 15px #00ff00, 0 0 30px #00ff99, 0 0 60px #00ffcc; }
     }
 
     p.subtitle {
-      font-size: 1.2rem;
+      font-size: 1.5rem;
       color: #00ff99;
+      margin-bottom: 2rem;
     }
 
     h3 {
-      margin-top: 2rem;
       color: #00ff99;
+      margin-top: 2rem;
       text-shadow: 0 0 5px #00ff99;
     }
 
-    /* Projetos com hover efeito neon */
     .project {
       font-weight: bold;
       color: #00ff00;
       text-shadow: 0 0 3px #00ff00;
-      margin: 0.3rem 0;
+      margin: 0.5rem 0;
       transition: all 0.3s ease-in-out;
     }
 
@@ -77,25 +95,67 @@
   </style>
 </head>
 <body>
-  <!-- Cabeçalho principal -->
-  <h1 id="main-header">Dev Twenty Seven</h1>
-  <p class="subtitle" id="sub-header">Exploring the future of tokens and digital assets.</p>
+  <canvas id="matrix"></canvas>
 
-  <!-- Projetos -->
-  <h3>🔹 Featured Projects</h3>
-  <div class="project">Project 1 – <a href="#">View</a></div>
-  <div class="project">Project 2 – <a href="#">View</a></div>
-  <div class="project">Project 3 – <a href="#">View</a></div>
+  <div class="content">
+    <!-- Cabeçalho -->
+    <h1 id="main-header">Crypto Projects Hub</h1>
+    <p class="subtitle" id="sub-header">Exploring the future of tokens and digital assets.</p>
 
-  <!-- Contatos -->
-  <h3>🔗 Connect</h3>
-  <p>
-    <a href="#">Twitter</a> | 
-    <a href="#">Discord</a> | 
-    <a href="#">Website</a>
-  </p>
+    <!-- Projetos -->
+    <h3>🔹 Featured Projects</h3>
+    <div class="project">Project 1 – <a href="#">View</a></div>
+    <div class="project">Project 2 – <a href="#">View</a></div>
+    <div class="project">Project 3 – <a href="#">View</a></div>
 
-  <!-- Rodapé -->
-  <footer id="footer-name">© 2025 Dev Twenty Seven. All Rights Reserved.</footer>
+    <!-- Contatos -->
+    <h3>🔗 Connect</h3>
+    <p>
+      <a href="#">Twitter</a> | 
+      <a href="#">Discord</a> | 
+      <a href="#">Website</a>
+    </p>
+
+    <!-- Rodapé -->
+    <footer id="footer-name">© 2025 Crypto Projects Hub. All Rights Reserved.</footer>
+  </div>
+
+  <script>
+    // Matrix effect
+    const canvas = document.getElementById("matrix");
+    const ctx = canvas.getContext("2d");
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@$%&*+-";
+    const fontSize = 20;
+    const columns = canvas.width / fontSize;
+    const drops = [];
+
+    for (let x = 0; x < columns; x++) drops[x] = Math.random() * canvas.height;
+
+    function draw() {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#00ff00";
+      ctx.font = fontSize + "px monospace";
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = letters.charAt(Math.floor(Math.random() * letters.length));
+        ctx.fillText(text, i * fontSize, drops[i]);
+        drops[i] += fontSize;
+        if (drops[i] > canvas.height) drops[i] = 0;
+      }
+    }
+
+    setInterval(draw, 50);
+
+    // Ajusta canvas ao redimensionar
+    window.addEventListener("resize", () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+  </script>
 </body>
 </html>
