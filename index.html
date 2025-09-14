@@ -5,112 +5,243 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dev Twenty Seven</title>
   <style>
-    /* Estilos do ticker no topo */
-    .ticker-bar {
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 100%;
+      min-height: 100%;
+      background-color: #000000;
+      font-family: 'Courier New', Courier, monospace;
+      color: #00ff00;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    canvas#matrix {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
-      height: 30px;
-      background-color: #000;
-      color: #fff;
-      font-family: monospace;
-      font-size: 14px;
+      height: 100%;
+      z-index: 0;
+      display: block;
+    }
+
+    .content {
+      position: relative;
+      z-index: 1;
+      width: 100%;
       display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
       align-items: center;
-      overflow: hidden;
-      border-bottom: 1px solid #00ff00;
-      z-index: 9999;
+      text-align: center;
+      padding: 3rem 1rem;
     }
-    .ticker-move {
-      display: inline-flex;
-      animation: tickerScroll 30s linear infinite;
-    }
-    @keyframes tickerScroll {
-      from { transform: translateX(100%); }
-      to { transform: translateX(-100%); }
-    }
-    .token {
-      display: flex;
-      align-items: center;
-      margin: 0 20px;
-      white-space: nowrap;
-      color: #ffffff;
-      text-shadow: 1px 1px 0 #000;
-    }
-    .token img {
-      width: 16px;
-      height: 16px;
-      margin-right: 6px;
-    }
-    .token span {
-      margin-right: 8px;
-    }
-    .positive {
+
+    /* Caixa de seleção de tema */
+    .theme-selector {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      z-index: 2;
+      background-color: rgba(0,0,0,0.5);
+      border: 1px solid #00ff00;
+      border-radius: 5px;
+      padding: 0.3rem 0.6rem;
       color: #00ff00;
+      font-weight: bold;
+      cursor: pointer;
     }
-    .negative {
-      color: #ff4444;
+
+    .theme-selector select {
+      background: transparent;
+      color: #00ff00;
+      border: none;
+      outline: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    /* Todas as letras com contorno */
+    .content * {
+      text-shadow:
+        1px 1px 0 #000,
+        -1px 1px 0 #000,
+        1px -1px 0 #000,
+        -1px -1px 0 #000;
+    }
+
+    h1#main-header {
+      font-size: 5rem;
+      color: #00ff00;
+      animation: glow 1.5s infinite alternate;
+      margin-bottom: 0.5rem;
+    }
+
+    p.subtitle-main, p.subtitle-secondary {
+      font-size: 2rem;
+      color: #ffffff; /* branco com contorno */
+      text-shadow: 
+        1px 1px 0 #000,
+        -1px 1px 0 #000,
+        1px -1px 0 #000,
+        -1px -1px 0 #000;
+      margin-bottom: 2rem;
+      animation: pulseGlow 2s infinite alternate;
+    }
+
+    @keyframes pulseGlow {
+      from { text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000, 0 0 5px #00ff00, 0 0 10px #00ff00; }
+      to { text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000, 0 0 15px #00ff00, 0 0 30px #00ff00; }
+    }
+
+    h2#secondary-title {
+      font-size: 2.5rem;
+      color: #00ff00;
+      margin-top: 1rem;
+      animation: glow 1.5s infinite alternate;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000, 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 30px #00ff99; }
+      to   { text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000, 0 0 20px #00ff00, 0 0 40px #00ff00, 0 0 60px #00ff99; }
+    }
+
+    h3 {
+      color: #ffffff;
+      text-shadow: 1px 1px 2px #000;
+      margin-top: 2rem;
+    }
+
+    .project {
+      font-weight: bold;
+      color: #00ff00;
+      background-color: rgba(0,0,0,0.85); /* fundo mais escuro */
+      padding: 0.5rem 1rem;
+      margin: 0.5rem 0;
+      border-radius: 5px;
+      transition: all 0.3s ease-in-out;
+      text-shadow: 1px 1px 2px #000;
+    }
+
+    .project a {
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: bold;
+      text-shadow: 1px 1px 2px #000;
+      transition: color 0.3s ease-in-out;
+    }
+
+    .project:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 10px #00ff00, 0 0 20px #00ff99;
+    }
+
+    .project:hover a {
+      color: #00ffcc;
+    }
+
+    .social-links a {
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: bold;
+      text-shadow: 1px 1px 2px #ccc;
+      margin: 0 0.5rem;
+      transition: color 0.3s ease-in-out, text-shadow 0.3s ease-in-out;
+    }
+
+    .social-links a:hover {
+      color: #00ffcc;
+      text-shadow: 0 0 10px #00ffcc;
+    }
+
+    footer {
+      color: #555555;
+      margin-top: 3rem;
     }
   </style>
 </head>
 <body>
-  <div class="ticker-bar">
-    <div id="ticker" class="ticker-move">
-      <!-- Tokens virão via JS -->
-    </div>
+  <!-- Caixa de seleção de tema -->
+  <div class="theme-selector">
+    Theme: 
+    <select id="themeSelect">
+      <option value="dark">Dark</option>
+      <option value="matrix">Matrix</option>
+    </select>
+  </div>
+
+  <canvas id="dark"></canvas>
+
+  <div class="content">
+    <h1 id="main-header">Dev Twenty Seven</h1>
+    <p class="subtitle-main">Welcome to my crypto and dev projects hub.</p>
+
+    <h2 id="secondary-title">Crypto Projects Hub</h2>
+    <p class="subtitle-secondary">Exploring the future of tokens and digital assets.</p>
+
+    <h3>🔹 Featured Projects</h3>
+    <div <a href="#"class="project">Whitepapper list</a></div>
+    <div class="project">Project 2 – <a href="#">View</a></div>
+    <div class="project">Project 3 – <a href="#">View</a></div>
+
+    <h3>🔗 Connect</h3>
+    <p class="social-links">
+      <a href="#">Twitter</a> | 
+      <a href="#">Discord</a> | 
+      <a href="#">Website</a>
+    </p>
+
+    <footer id="footer-name">© 2025 Dev Twenty Seven. All Rights Reserved.</footer>
   </div>
 
   <script>
-    const tokensWatchlist = [
-      { symbol: 'SOL', chain: 'solana', pairId: 'solana/sol-usdc' },
-      { symbol: 'BONK', chain: 'solana', pairId: 'solana/bonk-usdc' },
-      { symbol: 'JUP', chain: 'solana', pairId: 'solana/jupiter-usdc' }
-      // adicione os que quiser
-    ];
+    const canvas = document.getElementById("matrix");
+    const ctx = canvas.getContext("2d");
 
-    async function fetchTokenInfo(pairId) {
-      const url = `https://api.dexscreener.com/latest/dex/pairs/${pairId}`;
-      try {
-        const res = await fetch(url);
-        const data = await res.json();
-        // data contém priceUsd, priceChange, etc
-        return {
-          icon: data.pair.baseToken.logo || '',  // ou outro campo de logo
-          symbol: data.pair.baseToken.symbol,
-          marketCap: data.pair.liquidity.usd,     // usar liquidez como “market cap” se disponível
-          change1h: data.pair.priceChange.h1       // variação em 1h
-        };
-      } catch (err) {
-        console.error('DexScreener fetch error', err);
-        return null;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@$%&*+-";
+    const fontSize = 20;
+    const columns = canvas.width / fontSize;
+    const drops = [];
+
+    for (let x = 0; x < columns; x++) drops[x] = Math.random() * canvas.height;
+
+    function drawMatrix() {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#00ff00";
+      ctx.font = fontSize + "px monospace";
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = letters.charAt(Math.floor(Math.random() * letters.length));
+        ctx.fillText(text, i * fontSize, drops[i]);
+        drops[i] += fontSize;
+        if (drops[i] > canvas.height) drops[i] = 0;
       }
     }
 
-    async function buildTicker() {
-      const tickerEl = document.getElementById('ticker');
-      tickerEl.innerHTML = '';
-      for (const token of tokensWatchlist) {
-        const info = await fetchTokenInfo(token.pairId);
-        if (!info) continue;
-        const span = document.createElement('div');
-        span.className = 'token';
-        const signClass = info.change1h >= 0 ? 'positive' : 'negative';
-        span.innerHTML = `
-          ${info.icon ? `<img src="${info.icon}" alt="${info.symbol}">` : ''}
-          <span>${info.symbol}</span>
-          <span>$${(info.marketCap / 1e9).toFixed(2)}B</span>
-          <span class="${signClass}">${info.change1h >= 0 ? '+' : ''}${info.change1h.toFixed(2)}%</span>
-        `;
-        tickerEl.appendChild(span);
-      }
-    }
+    let matrixInterval = setInterval(drawMatrix, 50);
 
-    buildTicker();
-    // atualizar a cada minuto
-    setInterval(buildTicker, 60000);
+    window.addEventListener("resize", () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    // Troca de tema
+    const themeSelect = document.getElementById("themeSelect");
+    themeSelect.addEventListener("change", function() {
+      if(this.value === "matrix") {
+        canvas.style.display = "block";
+        matrixInterval = setInterval(drawMatrix, 50);
+      } else if(this.value === "dark") {
+        canvas.style.display = "none";
+        clearInterval(matrixInterval);
+        document.body.style.backgroundColor = "#0b0b0b";
+      }
+    });
   </script>
-
-  <!-- O resto do seu conteúdo aqui -->
 </body>
 </html>
