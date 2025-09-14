@@ -13,7 +13,7 @@
       font-family: 'Courier New', Courier, monospace;
       color: #00ff00;
       overflow-x: hidden;
-      overflow-y: auto; /* Permitir scroll */
+      overflow-y: auto;
     }
 
     canvas#matrix {
@@ -53,12 +53,15 @@
       margin-bottom: 0.5rem;
     }
 
-    p.subtitle-main {
+    p.subtitle-main, p.subtitle-secondary {
       font-size: 2rem;
-      color: #cccccc;
+      color: #ffffff; /* Branca com contorno */
+      text-shadow: 
+        1px 1px 0 #000,
+        -1px 1px 0 #000,
+        1px -1px 0 #000,
+        -1px -1px 0 #000;
       margin-bottom: 2rem;
-      text-shadow:
-        2px 2px 2px #000;
     }
 
     h2#secondary-title {
@@ -68,28 +71,22 @@
       animation: glow 1.5s infinite alternate;
     }
 
-    p.subtitle-secondary {
-      font-size: 1.2rem;
-      color: #aaaaaa;
-      margin-bottom: 2rem;
-      text-shadow: 2px 2px 2px #000;
-    }
-
     @keyframes glow {
       from { text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000, 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 30px #00ff99; }
       to   { text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000, 0 0 20px #00ff00, 0 0 40px #00ff00, 0 0 60px #00ff99; }
     }
 
     h3 {
-      color: #ffffff;
+      color: #ffffff; /* branco com contorno para Featured Projects */
       text-shadow: 1px 1px 2px #000;
       margin-top: 2rem;
     }
 
+    /* Projetos com caixa e hover brilho */
     .project {
       font-weight: bold;
       color: #00ff00;
-      background-color: rgba(0,0,0,0.6); /* Caixa atrás para contraste */
+      background-color: rgba(0,0,0,0.6);
       padding: 0.5rem 1rem;
       margin: 0.5rem 0;
       border-radius: 5px;
@@ -107,11 +104,26 @@
 
     .project:hover {
       transform: scale(1.05);
-      text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff99;
+      box-shadow: 0 0 10px #00ff00, 0 0 20px #00ff99; /* brilho ao passar mouse */
     }
 
     .project:hover a {
       color: #00ffcc;
+    }
+
+    /* Links sociais com contorno claro */
+    .social-links a {
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: bold;
+      text-shadow: 1px 1px 2px #ccc; /* contorno claro */
+      margin: 0 0.5rem;
+      transition: color 0.3s ease-in-out, text-shadow 0.3s ease-in-out;
+    }
+
+    .social-links a:hover {
+      color: #00ffcc;
+      text-shadow: 0 0 10px #00ffcc;
     }
 
     footer {
@@ -136,7 +148,7 @@
     <div class="project">Project 3 – <a href="#">View</a></div>
 
     <h3>🔗 Connect</h3>
-    <p>
+    <p class="social-links">
       <a href="#">Twitter</a> | 
       <a href="#">Discord</a> | 
       <a href="#">Website</a>
@@ -182,4 +194,3 @@
   </script>
 </body>
 </html>
-
