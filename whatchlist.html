@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dev Twenty Seven</title>
+  <style>
+    /* Barra do ticker */
+    .ticker-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 30px;
+      background-color: #000;
+      color: #fff;
+      font-family: monospace;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      border-bottom: 1px solid #00ff00;
+      z-index: 9999;
+    }
+    .ticker-move {
+      display: inline-flex;
+      animation: tickerScroll 30s linear infinite;
+    }
+    @keyframes tickerScroll {
+      from { transform: translateX(100%); }
+      to { transform: translateX(-100%); }
+    }
+    .token {
+      display: flex;
+      align-items: center;
+      margin: 0 25px;
+      white-space: nowrap;
+      text-shadow: 1px 1px 0 #000;
+    }
+    .token img {
+      width: 16px;
+      height: 16px;
+      margin-right: 6px;
+      border-radius: 50%;
+    }
+    .token span {
+      margin-right: 8px;
+    }
+    .positive {
+      color: #00ff00;
+    }
+    .negative {
+      color: #ff4444;
+    }
+  </style>
+</head>
+<body>
+  <!-- Barra Ticker -->
+  <div class="ticker-bar">
+    <div id="ticker" class="ticker-move">
+      <!-- Tokens virão via JS -->
+    </div>
+  </div>
+
+  <div style="margin-top:50px; text-align:center; color:white;">
+    Conteúdo do site...
+  </div>
+
+  <script>
+    // Lista dos tokens que você quer exibir (endereços Solana)
+    const tokensWatchlist = [
+      "So11111111111111111111111111111111111111112", // SOL
+      "9A2jUbgoDY97fruKHXvDd7eQiq4xvnW3By1BfH1Bwn9Y", // DEEP
+      "J3oWJafxg8xmH5vvwBAVX99rmr8b7C9BxjmjaMgCpump",  // MAHA
+      "AtPNZ3Rwcezea16xkjkxULzCMKpSbS2rVEirVfzrnEa6", //GOLD
+      "vtUzXyowSMsNUwiZMLNufySoeW9ehaPAVr7YsYQpump", //MARV
+      "FRsV3m924aGpLMuEekoo3JkkMt1oopaM4JY9ki5YLXrp" //XVM
+
+      
+      // adicione outros contratos Solana aqui
+    ];
+
+    async function fetchTokenInfo(address) {
+      const url = `https://api.dexscreener.com/latest/dex/tokens/${address}`;
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        if (!data.pairs || data.pairs.length === 0) return null;
+
+        // Pega o par principal contra USDC se existir, senão o primeiro
+        const pair = data.pairs.find(p => p.quoteToken.symbol === "USDC") || data.pairs[0];
+
+        return {
+          symbol: pair.baseToken.symbol,
+          icon: pair.info?.imageUrl || "",  // algumas vezes vem vazio
+          marketCap: pair.liquidity?.usd || 0,
+          change1h: pair.priceChange?.h1 || 0
+        };
+      } catch (err) {
+        console.error("DexScreener fetch error", err);
+        return null;
+      }
+    }
+
+    async function buildTicker() {
+      const tickerEl = document.getElementById("ticker");
+      tickerEl.innerHTML = "";
+      for (const address of tokensWatchlist) {
+        const info = await fetchTokenInfo(address);
+        if (!info) continue;
+        const span = document.createElement("div");
+        span.className = "token";
+        const signClass = info.change1h >= 0 ? "positive" : "negative";
+        span.innerHTML = `
+          ${info.icon ? `<img src="${info.icon}" alt="${info.symbol}">` : ""}
+          <span>${info.symbol}</span>
+          <span>$${(info.marketCap / 1e9).toFixed(2)}B</span>
+          <span class="${signClass}">${info.change1h >= 0 ? "+" : ""}${info.change1h.toFixed(2)}%</span>
+        `;
+        tickerEl.appendChild(span);
+      }
+    }
+
+    buildTicker();
+    // Atualizar a cada 1 seg
+    setInterval(buildTicker, 1000);
+  </script>
+</body>
+</html>
