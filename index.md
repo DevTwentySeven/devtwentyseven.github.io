@@ -1,11 +1,16 @@
-<h1 align="center">🚀 <span style="color:#00ff99;">Crypto Projects Hub</span></h1>
+<!-- Cabeçalho principal -->
+<h1 align="center">
+  🚀 <span style="color:#00ff99;" id="main-header">Crypto Projects Hub</span>
+</h1>
 
+<!-- Subtítulo -->
 <p align="center">
-  <strong style="color:#cccccc;">Exploring the future of tokens and digital assets.</strong>
+  <strong style="color:#cccccc;" id="sub-header">Exploring the future of tokens and digital assets.</strong>
 </p>
 
 ---
 
+<!-- Seção de projetos -->
 <h3>🔹 <span style="color:#00ff99;">Featured Projects</span></h3>
 
 - <strong style="color:#00ff99;">Project 1</strong> – Brief description. [View](#)  
@@ -14,6 +19,7 @@
 
 ---
 
+<!-- Seção de contatos -->
 <h3>🔗 <span style="color:#00ff99;">Connect</span></h3>
 
 - [Twitter](#)  
@@ -22,4 +28,5 @@
 
 ---
 
-<p align="center" style="color:#555555;">© 2025 Crypto Projects Hub. All Rights Reserved.</p>
+<!-- Rodapé -->
+<p align="center" style="color:#555555;">© 2025 <span id="footer-name">Crypto Projects Hub</span>. All Rights Reserved.</p>
