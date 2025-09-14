@@ -7,6 +7,6 @@ const watchlist = [
   "J3oWJafxg8xmH5vvwBAVX99rmr8b7C9BxjmjaMgCpump", // MAHA
   "AtPNZ3Rwcezea16xkjkxULzCMKpSbS2rVEirVfzrnEa6", // GOLD
   "vtUzXyowSMsNUwiZMLNufySoeW9ehaPAVr7YsYQpump", // MARV
-  "FRsV3m924aGpLMuEekoo3JkkMt1oopaM4JY9ki5YLXrp",  // XVM
+  "FRsV3m924aGpLMuEekoo3JkkMt1oopaM4JY9ki5YLXrp"  // XVM
   // 
 ];
