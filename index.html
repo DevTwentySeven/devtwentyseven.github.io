@@ -16,47 +16,6 @@
       overflow-y: auto;
     }
 
-    /* === Watchlist === */
-    #watchlist {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 28px;
-      background: #000;
-      color: #00ff00;
-      font-size: 14px;
-      display: flex;
-      align-items: center;
-      overflow: hidden;
-      white-space: nowrap;
-      border-bottom: 1px solid #00ff00;
-      z-index: 10;
-    }
-
-    #watchlist span {
-      display: inline-flex;
-      align-items: center;
-      margin-right: 30px;
-      animation: scroll-left 25s linear infinite;
-      cursor: pointer;
-    }
-
-    #watchlist img {
-      width: 16px;
-      height: 16px;
-      margin-right: 6px;
-      border-radius: 50%;
-    }
-
-    #watchlist .positive { color: #00ff00; }
-    #watchlist .negative { color: #ff3333; }
-
-    @keyframes scroll-left {
-      from { transform: translateX(100%); }
-      to   { transform: translateX(-100%); }
-    }
-
     canvas#matrix {
       position: fixed;
       top: 0;
@@ -77,15 +36,14 @@
       align-items: center;
       text-align: center;
       padding: 3rem 1rem;
-      margin-top: 40px; /* evita sobrepor a watchlist */
     }
 
     /* Caixa de seleção de tema */
     .theme-selector {
       position: absolute;
-      top: 2rem;
+      top: 1rem;
       right: 1rem;
-      z-index: 11;
+      z-index: 3;
       background-color: rgba(0,0,0,0.5);
       border: 1px solid #00ff00;
       border-radius: 5px;
@@ -104,7 +62,7 @@
       cursor: pointer;
     }
 
-    /* Letras com contorno */
+    /* Todas as letras com contorno */
     .content * {
       text-shadow:
         1px 1px 0 #000,
@@ -122,14 +80,19 @@
 
     p.subtitle-main, p.subtitle-secondary {
       font-size: 2rem;
-      color: #ffffff;
+      color: #ffffff; /* branco com contorno */
+      text-shadow:
+        1px 1px 0 #000,
+        -1px 1px 0 #000,
+        1px -1px 0 #000,
+        -1px -1px 0 #000;
       margin-bottom: 2rem;
       animation: pulseGlow 2s infinite alternate;
     }
 
     @keyframes pulseGlow {
-      from { text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00; }
-      to   { text-shadow: 0 0 15px #00ff00, 0 0 30px #00ff00; }
+      from { text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000, 0 0 5px #00ff00, 0 0 10px #00ff00; }
+      to { text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000, 0 0 15px #00ff00, 0 0 30px #00ff00; }
     }
 
     h2#secondary-title {
@@ -140,29 +103,32 @@
     }
 
     @keyframes glow {
-      from { text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00; }
-      to   { text-shadow: 0 0 40px #00ff00, 0 0 60px #00ff00; }
+      from { text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000, 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 30px #00ff99; }
+      to   { text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000, 0 0 20px #00ff00, 0 0 40px #00ff00, 0 0 60px #00ff99; }
     }
 
     h3 {
       color: #ffffff;
+      text-shadow: 1px 1px 2px #000;
       margin-top: 2rem;
     }
 
     .project {
       font-weight: bold;
       color: #00ff00;
-      background-color: rgba(0,0,0,0.85);
+      background-color: rgba(0,0,0,0.85); /* fundo mais escuro */
       padding: 0.5rem 1rem;
       margin: 0.5rem 0;
       border-radius: 5px;
       transition: all 0.3s ease-in-out;
+      text-shadow: 1px 1px 2px #000;
     }
 
     .project a {
       color: #ffffff;
       text-decoration: none;
       font-weight: bold;
+      text-shadow: 1px 1px 2px #000;
       transition: color 0.3s ease-in-out;
     }
 
@@ -171,7 +137,9 @@
       box-shadow: 0 0 10px #00ff00, 0 0 20px #00ff99;
     }
 
-    .project:hover a { color: #00ffcc; }
+    .project:hover a {
+      color: #00ffcc;
+    }
 
     .social-links a {
       color: #ffffff;
@@ -187,13 +155,36 @@
       text-shadow: 0 0 10px #00ffcc;
     }
 
-    footer { color: #555555; margin-top: 3rem; }
+    footer {
+      color: #555555;
+      margin-top: 3rem;
+    }
+
+    /* Barra da watchlist */
+    .watchlist-bar {
+      width: 100%;
+      background: #000;
+      color: #fff;
+      font-size: 0.9rem;
+      padding: 3px 0;
+      overflow: hidden;
+      white-space: nowrap;
+      z-index: 5;
+    }
+
+    .watchlist-bar .token {
+      display: inline-block;
+      margin: 0 1rem;
+    }
+
+    .watchlist-bar a {
+      color: #00ffcc;
+      text-decoration: none;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
-  <!-- Barra de Watchlist -->
-  <div id="watchlist">Carregando...</div>
-
   <!-- Caixa de seleção de tema -->
   <div class="theme-selector">
     Theme:
@@ -227,69 +218,10 @@
     <footer id="footer-name">© 2025 Dev Twenty Seven. All Rights Reserved.</footer>
   </div>
 
+  <!-- Importa a lista de contratos -->
+  <script src="watchlist.js"></script>
+
   <script>
-    // === Lista de contratos monitorados ===
-    const tokens = [
-      "So11111111111111111111111111111111111111112", // SOL
-      "9A2jUbgoDY97fruKHXvDd7eQiq4xvnW3By1BfH1Bwn9Y", // DEEP
-      "J3oWJafxg8xmH5vvwBAVX99rmr8b7C9BxjmjaMgCpump", // MAHA
-      "AtPNZ3Rwcezea16xkjkxULzCMKpSbS2rVEirVfzrnEa6", // GOLD
-      "vtUzXyowSMsNUwiZMLNufySoeW9ehaPAVr7YsYQpump", // MARV
-      "FRsV3m924aGpLMuEekoo3JkkMt1oopaM4JY9ki5YLXrp"  // XVM
-    ];
-
-    const watchlistDiv = document.getElementById("watchlist");
-
-    // === Função para formatar valores em k / M / B ===
-    function formatMarketCap(value) {
-      if (!value) return "N/A";
-      if (value >= 1e9) return (value / 1e9).toFixed(2) + "B";
-      if (value >= 1e6) return (value / 1e6).toFixed(2) + "M";
-      if (value >= 1e3) return (value / 1e3).toFixed(2) + "k";
-      return value.toString();
-    }
-
-    // === Puxa dados da DexScreener ===
-    async function loadWatchlist() {
-      try {
-        const url = `https://api.dexscreener.com/latest/dex/tokens/${tokens.join(",")}`;
-        const res = await fetch(url);
-        const data = await res.json();
-
-        if (!data.pairs) {
-          watchlistDiv.innerHTML = "Erro ao carregar dados.";
-          return;
-        }
-
-        watchlistDiv.innerHTML = "";
-
-        data.pairs.forEach(pair => {
-          const marketCap = formatMarketCap(pair.fdv);
-          const change = pair.priceChange?.h1 || 0;
-          const trendClass = change >= 0 ? "positive" : "negative";
-
-          // Cria elemento da barra
-          const span = document.createElement("span");
-          span.innerHTML = `
-            <img src="${pair.info.imageUrl || ""}" alt="">
-            <strong>${pair.baseToken.symbol}</strong> 
-            - $${marketCap} 
-            <span class="${trendClass}">${change > 0 ? "+" : ""}${change}%</span>
-          `;
-          span.onclick = () => window.open(`https://dexscreener.com/solana/${pair.pairAddress}`, "_blank");
-          watchlistDiv.appendChild(span);
-        });
-
-      } catch (err) {
-        console.error("Erro Watchlist:", err);
-        watchlistDiv.innerHTML = "Erro ao carregar dados.";
-      }
-    }
-
-    loadWatchlist();
-    setInterval(loadWatchlist, 60000); // atualiza a cada 1 min
-
-    // === Script Matrix ===
     const canvas = document.getElementById("matrix");
     const ctx = canvas.getContext("2d");
 
@@ -336,6 +268,48 @@
         document.body.style.backgroundColor = "#0b0b0b";
       }
     });
+
+    // Watchlist
+    const marquee = document.createElement("div");
+    marquee.className = "watchlist-bar";
+    document.body.prepend(marquee);
+
+    async function loadWatchlist() {
+      try {
+        marquee.innerHTML = "Carregando...";
+
+        const url = `https://api.dexscreener.com/latest/dex/tokens/${watchlist.join(",")}`;
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (!data.pairs) {
+          marquee.innerHTML = "Erro ao carregar dados.";
+          return;
+        }
+
+        marquee.innerHTML = data.pairs.map(pair => {
+          const symbol = pair.baseToken.symbol;
+          const cap = pair.fdv ? `$${(pair.fdv/1e6).toFixed(2)}M` : "N/A";
+          const change = pair.priceChange?.h1 ?? 0;
+          const color = change >= 0 ? "#00ff00" : "#ff4444";
+          return `
+            <span class="token">
+              <a href="https://dexscreener.com/solana/${pair.pairAddress}" target="_blank">
+                ${symbol}
+              </a> 
+              <span style="color:${color}">${change.toFixed(2)}%</span> 
+              <span>${cap}</span>
+            </span>
+          `;
+        }).join(" • ");
+      } catch (err) {
+        console.error(err);
+        marquee.innerHTML = "Erro ao carregar dados.";
+      }
+    }
+
+    loadWatchlist();
+    setInterval(loadWatchlist, 60000); // atualiza a cada 1 min
   </script>
 </body>
 </html>
