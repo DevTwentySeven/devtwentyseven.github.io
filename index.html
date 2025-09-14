@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crypto Projects Hub</title>
+  <style>
+    /* Fundo escuro e estilo hacker */
+    body {
+      margin: 0;
+      font-family: 'Courier New', Courier, monospace;
+      background-color: #0b0b0b;
+      color: #00ff00;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      text-align: center;
+      overflow-x: hidden;
+    }
+
+    /* Título principal com brilho pulsante */
+    h1#main-header {
+      font-size: 3rem;
+      margin-bottom: 0.5rem;
+      color: #00ff00;
+      text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 40px #00ff00;
+      animation: glow 1.5s infinite alternate;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00, 0 0 20px #00ff00; }
+      to { text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 40px #00ff00, 0 0 80px #00ff00; }
+    }
+
+    p.subtitle {
+      font-size: 1.2rem;
+      color: #00ff99;
+    }
+
+    h3 {
+      margin-top: 2rem;
+      color: #00ff99;
+      text-shadow: 0 0 5px #00ff99;
+    }
+
+    /* Projetos com hover efeito neon */
+    .project {
+      font-weight: bold;
+      color: #00ff00;
+      text-shadow: 0 0 3px #00ff00;
+      margin: 0.3rem 0;
+      transition: all 0.3s ease-in-out;
+    }
+
+    .project a {
+      color: #00ff99;
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.3s ease-in-out;
+    }
+
+    .project:hover {
+      transform: scale(1.05);
+      text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff99;
+    }
+
+    .project:hover a {
+      color: #00ffcc;
+    }
+
+    footer {
+      color: #555555;
+      margin-top: 3rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- Cabeçalho principal -->
+  <h1 id="main-header">Crypto Projects Hub</h1>
+  <p class="subtitle" id="sub-header">Exploring the future of tokens and digital assets.</p>
+
+  <!-- Projetos -->
+  <h3>🔹 Featured Projects</h3>
+  <div class="project">Project 1 – <a href="#">View</a></div>
+  <div class="project">Project 2 – <a href="#">View</a></div>
+  <div class="project">Project 3 – <a href="#">View</a></div>
+
+  <!-- Contatos -->
+  <h3>🔗 Connect</h3>
+  <p>
+    <a href="#">Twitter</a> | 
+    <a href="#">Discord</a> | 
+    <a href="#">Website</a>
+  </p>
+
+  <!-- Rodapé -->
+  <footer id="footer-name">© 2025 Crypto Projects Hub. All Rights Reserved.</footer>
+</body>
+</html>
