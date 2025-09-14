@@ -43,7 +43,7 @@
       position: absolute;
       top: 1rem;
       right: 1rem;
-      z-index: 2;
+      z-index: 3; /* acima do watchlist */
       background-color: rgba(0,0,0,0.5);
       border: 1px solid #00ff00;
       border-radius: 5px;
@@ -81,7 +81,7 @@
     p.subtitle-main, p.subtitle-secondary {
       font-size: 2rem;
       color: #ffffff; /* branco com contorno */
-      text-shadow: 
+      text-shadow:
         1px 1px 0 #000,
         -1px 1px 0 #000,
         1px -1px 0 #000,
@@ -162,9 +162,12 @@
   </style>
 </head>
 <body>
+  <!-- Inclui a barra de watchlist de um arquivo separado -->
+  <div id="watchlist-container"></div>
+
   <!-- Caixa de seleção de tema -->
   <div class="theme-selector">
-    Theme: 
+    Theme:
     <select id="themeSelect">
       <option value="matrix">Matrix</option>
       <option value="dark">Dark</option>
@@ -187,8 +190,8 @@
 
     <h3>🔗 Connect</h3>
     <p class="social-links">
-      <a href="#">Twitter</a> | 
-      <a href="#">Discord</a> | 
+      <a href="#">Twitter</a> |
+      <a href="#">Discord</a> |
       <a href="#">Website</a>
     </p>
 
@@ -196,6 +199,14 @@
   </div>
 
   <script>
+    // === Importa o conteúdo da watchlist ===
+    fetch("watchlist.html")
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById("watchlist-container").innerHTML = html;
+      });
+
+    // === Script Matrix ===
     const canvas = document.getElementById("matrix");
     const ctx = canvas.getContext("2d");
 
