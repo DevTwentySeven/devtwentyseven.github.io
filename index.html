@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dev Twenty Seven</title>
   <style>
-    /* Barra do ticker */
+    /* Estilos do ticker no topo */
     .ticker-bar {
       position: fixed;
       top: 0;
@@ -33,15 +33,15 @@
     .token {
       display: flex;
       align-items: center;
-      margin: 0 25px;
+      margin: 0 20px;
       white-space: nowrap;
+      color: #ffffff;
       text-shadow: 1px 1px 0 #000;
     }
     .token img {
       width: 16px;
       height: 16px;
       margin-right: 6px;
-      border-radius: 50%;
     }
     .token span {
       margin-right: 8px;
@@ -55,70 +55,62 @@
   </style>
 </head>
 <body>
-  <!-- Barra Ticker -->
   <div class="ticker-bar">
     <div id="ticker" class="ticker-move">
       <!-- Tokens virão via JS -->
     </div>
   </div>
 
-  <div style="margin-top:50px; text-align:center; color:white;">
-    Conteúdo do site...
-  </div>
-
   <script>
-    // Lista dos tokens que você quer exibir (endereços Solana)
     const tokensWatchlist = [
-      "So11111111111111111111111111111111111111112", // SOL
-      "DezXAZ8z7PnrnRJdW7y5M7L3S4uHEUGeB3p2Hn6tFQEQ", // BONK
-      "JUPxQh6J69apja13CrcjbCZbxt2h3HV1YwQqGL9gn7z"  // JUP
-      // adicione outros contratos Solana aqui
+      { symbol: 'SOL', chain: 'solana', pairId: 'solana/sol-usdc' },
+      { symbol: 'BONK', chain: 'solana', pairId: 'solana/bonk-usdc' },
+      { symbol: 'JUP', chain: 'solana', pairId: 'solana/jupiter-usdc' }
+      // adicione os que quiser
     ];
 
-    async function fetchTokenInfo(address) {
-      const url = `https://api.dexscreener.com/latest/dex/tokens/${address}`;
+    async function fetchTokenInfo(pairId) {
+      const url = `https://api.dexscreener.com/latest/dex/pairs/${pairId}`;
       try {
         const res = await fetch(url);
         const data = await res.json();
-        if (!data.pairs || data.pairs.length === 0) return null;
-
-        // Pega o par principal contra USDC se existir, senão o primeiro
-        const pair = data.pairs.find(p => p.quoteToken.symbol === "USDC") || data.pairs[0];
-
+        // data contém priceUsd, priceChange, etc
         return {
-          symbol: pair.baseToken.symbol,
-          icon: pair.info?.imageUrl || "",  // algumas vezes vem vazio
-          marketCap: pair.liquidity?.usd || 0,
-          change1h: pair.priceChange?.h1 || 0
+          icon: data.pair.baseToken.logo || '',  // ou outro campo de logo
+          symbol: data.pair.baseToken.symbol,
+          marketCap: data.pair.liquidity.usd,     // usar liquidez como “market cap” se disponível
+          change1h: data.pair.priceChange.h1       // variação em 1h
         };
       } catch (err) {
-        console.error("DexScreener fetch error", err);
+        console.error('DexScreener fetch error', err);
         return null;
       }
     }
 
     async function buildTicker() {
-      const tickerEl = document.getElementById("ticker");
-      tickerEl.innerHTML = "";
-      for (const address of tokensWatchlist) {
-        const info = await fetchTokenInfo(address);
+      const tickerEl = document.getElementById('ticker');
+      tickerEl.innerHTML = '';
+      for (const token of tokensWatchlist) {
+        const info = await fetchTokenInfo(token.pairId);
         if (!info) continue;
-        const span = document.createElement("div");
-        span.className = "token";
-        const signClass = info.change1h >= 0 ? "positive" : "negative";
+        const span = document.createElement('div');
+        span.className = 'token';
+        const signClass = info.change1h >= 0 ? 'positive' : 'negative';
         span.innerHTML = `
-          ${info.icon ? `<img src="${info.icon}" alt="${info.symbol}">` : ""}
+          ${info.icon ? `<img src="${info.icon}" alt="${info.symbol}">` : ''}
           <span>${info.symbol}</span>
           <span>$${(info.marketCap / 1e9).toFixed(2)}B</span>
-          <span class="${signClass}">${info.change1h >= 0 ? "+" : ""}${info.change1h.toFixed(2)}%</span>
+          <span class="${signClass}">${info.change1h >= 0 ? '+' : ''}${info.change1h.toFixed(2)}%</span>
         `;
         tickerEl.appendChild(span);
       }
     }
 
     buildTicker();
-    // Atualizar a cada 1 min
+    // atualizar a cada minuto
     setInterval(buildTicker, 60000);
   </script>
+
+  <!-- O resto do seu conteúdo aqui -->
 </body>
 </html>
