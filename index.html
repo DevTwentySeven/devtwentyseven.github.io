@@ -53,15 +53,22 @@
       margin-bottom: 0.5rem;
     }
 
+    /* Subtítulos com leve pulsar */
     p.subtitle-main, p.subtitle-secondary {
       font-size: 2rem;
-      color: #ffffff; /* Branca com contorno */
+      color: #ffffff; /* branco com contorno */
       text-shadow: 
         1px 1px 0 #000,
         -1px 1px 0 #000,
         1px -1px 0 #000,
         -1px -1px 0 #000;
       margin-bottom: 2rem;
+      animation: pulseGlow 2s infinite alternate;
+    }
+
+    @keyframes pulseGlow {
+      from { text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000, 0 0 5px #00ff00, 0 0 10px #00ff00; }
+      to { text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000, 0 0 15px #00ff00, 0 0 30px #00ff00; }
     }
 
     h2#secondary-title {
@@ -82,11 +89,11 @@
       margin-top: 2rem;
     }
 
-    /* Projetos com caixa e hover brilho */
+    /* Projetos com caixa mais escura e hover brilho */
     .project {
       font-weight: bold;
       color: #00ff00;
-      background-color: rgba(0,0,0,0.6);
+      background-color: rgba(0,0,0,0.8); /* caixa mais escura */
       padding: 0.5rem 1rem;
       margin: 0.5rem 0;
       border-radius: 5px;
@@ -104,7 +111,7 @@
 
     .project:hover {
       transform: scale(1.05);
-      box-shadow: 0 0 10px #00ff00, 0 0 20px #00ff99; /* brilho ao passar mouse */
+      box-shadow: 0 0 10px #00ff00, 0 0 20px #00ff99;
     }
 
     .project:hover a {
