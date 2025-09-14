@@ -187,7 +187,7 @@
       div.innerHTML=`${info.icon?`<img src="${info.icon}" alt="${info.symbol}">`:""}
                      <span>${info.symbol}</span>
                      <span>$${formatNumber(info.marketCap)}</span>
-                     <span class="${info.change1h>=0?"positive":"negative"}">${info.change1h>=0?"+":""}${info.change1h.toFixed(2)}%</span>`;
+                     <span class="${info.change24h>=0?"positive":"negative"}">${info.change24h>=0?"+":""}${info.change24h.toFixed(2)}%</span>`;
       div.addEventListener("click",()=>window.open(`https://dexscreener.com/solana/${info.address}`,"_blank"));
       tickerEl.appendChild(div);
     });
@@ -199,7 +199,7 @@
   }
 
   buildTicker();
-  setInterval(buildTicker,60000);
+  setInterval(buildTicker,30000);
 </script>
 
 <style>
