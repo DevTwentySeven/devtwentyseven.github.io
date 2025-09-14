@@ -1,191 +1,204 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dev Twenty Seven</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body {
-      width: 100%;
-      min-height: 100%;
-      background-color: #0b0b0b;
-      font-family: 'Courier New', Courier, monospace;
-      color: #00ff00;
-      overflow-x: hidden;
-      overflow-y: auto;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dev Twenty Seven</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 100%;
+    min-height: 100%;
+    background-color: #0b0b0b;
+    font-family: 'Courier New', Courier, monospace;
+    color: #00ff00;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
 
-    canvas#matrix {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-      display: block;
-    }
+  canvas#matrix {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    display: block;
+  }
 
-    .content {
-      position: relative;
-      z-index: 1;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      align-items: center;
-      text-align: center;
-      padding: 3rem 1rem;
-    }
+  .content {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    text-align: center;
+    padding: 3rem 1rem;
+  }
 
-    /* Caixa de seleção de tema */
-    .theme-selector {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      z-index: 3;
-      background-color: rgba(0,0,0,0.5);
-      border: 1px solid #00ff00;
-      border-radius: 5px;
-      padding: 0.3rem 0.6rem;
-      color: #00ff00;
-      font-weight: bold;
-      cursor: pointer;
-    }
+  /* Caixa de seleção de tema */
+  .theme-selector {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 5;
+    background-color: rgba(0,0,0,0.5);
+    border: 1px solid #00ff00;
+    border-radius: 5px;
+    padding: 0.3rem 0.6rem;
+    color: #00ff00;
+    font-weight: bold;
+    cursor: pointer;
+  }
 
-    .theme-selector select {
-      background: transparent;
-      color: #00ff00;
-      border: none;
-      outline: none;
-      font-weight: bold;
-      cursor: pointer;
-    }
+  .theme-selector select {
+    background: transparent;
+    color: #00ff00;
+    border: none;
+    outline: none;
+    font-weight: bold;
+    cursor: pointer;
+  }
 
-    /* Todas as letras com contorno */
-    .content * {
-      text-shadow:
-        1px 1px 0 #000,
-        -1px 1px 0 #000,
-        1px -1px 0 #000,
-        -1px -1px 0 #000;
-    }
+  /* Letras com contorno */
+  .content * {
+    text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000;
+  }
 
-    h1#main-header {
-      font-size: 5rem;
-      color: #00ff00;
-      animation: glow 1.5s infinite alternate;
-      margin-bottom: 0.5rem;
-    }
+  h1#main-header {
+    font-size: 5rem;
+    color: #00ff00;
+    animation: glow 1.5s infinite alternate;
+    margin-bottom: 0.5rem;
+  }
 
-    p.subtitle-main, p.subtitle-secondary {
-      font-size: 2rem;
-      color: #ffffff; /* branco com contorno */
-      text-shadow:
-        1px 1px 0 #000,
-        -1px 1px 0 #000,
-        1px -1px 0 #000,
-        -1px -1px 0 #000;
-      margin-bottom: 2rem;
-      animation: pulseGlow 2s infinite alternate;
-    }
+  p.subtitle-main, p.subtitle-secondary {
+    font-size: 2rem;
+    color: #fff;
+    text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000;
+    margin-bottom: 2rem;
+    animation: pulseGlow 2s infinite alternate;
+  }
 
-    @keyframes pulseGlow {
-      from { text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000, 0 0 5px #00ff00, 0 0 10px #00ff00; }
-      to { text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000, 0 0 15px #00ff00, 0 0 30px #00ff00; }
-    }
+  @keyframes pulseGlow {
+    from { text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000, 0 0 5px #00ff00, 0 0 10px #00ff00; }
+    to { text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000, 0 0 15px #00ff00, 0 0 30px #00ff00; }
+  }
 
-    h2#secondary-title {
-      font-size: 2.5rem;
-      color: #00ff00;
-      margin-top: 1rem;
-      animation: glow 1.5s infinite alternate;
-    }
+  h2#secondary-title {
+    font-size: 2.5rem;
+    color: #00ff00;
+    margin-top: 1rem;
+    animation: glow 1.5s infinite alternate;
+  }
 
-    @keyframes glow {
-      from { text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000, 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 30px #00ff99; }
-      to   { text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000, 0 0 20px #00ff00, 0 0 40px #00ff00, 0 0 60px #00ff99; }
-    }
+  @keyframes glow {
+    from { text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000, 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 30px #00ff99; }
+    to { text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000, 0 0 20px #00ff00, 0 0 40px #00ff00, 0 0 60px #00ff99; }
+  }
 
-    h3 {
-      color: #ffffff;
-      text-shadow: 1px 1px 2px #000;
-      margin-top: 2rem;
-    }
+  h3 {
+    color: #fff;
+    text-shadow: 1px 1px 2px #000;
+    margin-top: 2rem;
+  }
 
-    .project {
-      font-weight: bold;
-      color: #00ff00;
-      background-color: rgba(0,0,0,0.85); /* fundo mais escuro */
-      padding: 0.5rem 1rem;
-      margin: 0.5rem 0;
-      border-radius: 5px;
-      transition: all 0.3s ease-in-out;
-      text-shadow: 1px 1px 2px #000;
-    }
+  .project {
+    font-weight: bold;
+    color: #00ff00;
+    background-color: rgba(0,0,0,0.85);
+    padding: 0.5rem 1rem;
+    margin: 0.5rem 0;
+    border-radius: 5px;
+    transition: all 0.3s ease-in-out;
+    text-shadow: 1px 1px 2px #000;
+  }
 
-    .project a {
-      color: #ffffff;
-      text-decoration: none;
-      font-weight: bold;
-      text-shadow: 1px 1px 2px #000;
-      transition: color 0.3s ease-in-out;
-    }
+  .project a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px #000;
+    transition: color 0.3s ease-in-out;
+  }
 
-    .project:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 10px #00ff00, 0 0 20px #00ff99;
-    }
+  .project:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 10px #00ff00, 0 0 20px #00ff99;
+  }
 
-    .project:hover a {
-      color: #00ffcc;
-    }
+  .project:hover a {
+    color: #00ffcc;
+  }
 
-    .social-links a {
-      color: #ffffff;
-      text-decoration: none;
-      font-weight: bold;
-      text-shadow: 1px 1px 2px #ccc;
-      margin: 0 0.5rem;
-      transition: color 0.3s ease-in-out, text-shadow 0.3s ease-in-out;
-    }
+  .social-links a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px #ccc;
+    margin: 0 0.5rem;
+    transition: color 0.3s ease-in-out, text-shadow 0.3s ease-in-out;
+  }
 
-    .social-links a:hover {
-      color: #00ffcc;
-      text-shadow: 0 0 10px #00ffcc;
-    }
+  .social-links a:hover {
+    color: #00ffcc;
+    text-shadow: 0 0 10px #00ffcc;
+  }
 
-    footer {
-      color: #555555;
-      margin-top: 3rem;
-    }
+  footer {
+    color: #555;
+    margin-top: 3rem;
+  }
 
-    /* Barra da watchlist */
-    .watchlist-bar {
-      width: 100%;
-      background: #000;
-      color: #fff;
-      font-size: 0.9rem;
-      padding: 3px 0;
-      overflow: hidden;
-      white-space: nowrap;
-      z-index: 5;
-    }
+  /* === Watchlist bar === */
+  .watchlist-bar {
+    width: 100%;
+    background: #000;
+    color: #fff;
+    font-size: 0.9rem;
+    padding: 3px 0;
+    overflow: hidden;
+    white-space: nowrap;
+    z-index: 10;
+    position: fixed;
+    top: 0;
+    left: 0;
+    border-bottom: 1px solid #00ff00;
+  }
 
-    .watchlist-bar .token {
-      display: inline-block;
-      margin: 0 1rem;
-    }
+  .watchlist-content {
+    display: inline-block;
+    padding-left: 100%;
+    animation: scroll 35s linear infinite;
+  }
 
-    .watchlist-bar a {
-      color: #00ffcc;
-      text-decoration: none;
-      font-weight: bold;
-    }
-  </style>
+  @keyframes scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-100%); }
+  }
+
+  .watchlist-bar .token {
+    display: inline-block;
+    margin: 0 1rem;
+  }
+
+  .watchlist-bar a {
+    color: #00ffcc;
+    text-decoration: none;
+    font-weight: bold;
+  }
+
+</style>
 </head>
 <body>
-  <!-- Caixa de seleção de tema -->
+  <!-- Watchlist -->
+  <div class="watchlist-bar">
+    <div id="watchlistContent" class="watchlist-content">Carregando...</div>
+  </div>
+
+  <!-- Theme selector -->
   <div class="theme-selector">
     Theme:
     <select id="themeSelect">
@@ -218,61 +231,10 @@
     <footer id="footer-name">© 2025 Dev Twenty Seven. All Rights Reserved.</footer>
   </div>
 
-  <!-- Importa a lista de contratos -->
-  <script src="watchlist.js"></script>
-
+  <!-- === Scripts === -->
+  <script src="watchlist.js"></script> <!-- sua lista de tokens -->
   <script>
-    const canvas = document.getElementById("matrix");
-    const ctx = canvas.getContext("2d");
-
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@$%&*+-";
-    const fontSize = 20;
-    const columns = canvas.width / fontSize;
-    const drops = [];
-
-    for (let x = 0; x < columns; x++) drops[x] = Math.random() * canvas.height;
-
-    function drawMatrix() {
-      ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = "#00ff00";
-      ctx.font = fontSize + "px monospace";
-
-      for (let i = 0; i < drops.length; i++) {
-        const text = letters.charAt(Math.floor(Math.random() * letters.length));
-        ctx.fillText(text, i * fontSize, drops[i]);
-        drops[i] += fontSize;
-        if (drops[i] > canvas.height) drops[i] = 0;
-      }
-    }
-
-    let matrixInterval = setInterval(drawMatrix, 50);
-
-    window.addEventListener("resize", () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    });
-
-    // Troca de tema
-    const themeSelect = document.getElementById("themeSelect");
-    themeSelect.addEventListener("change", function() {
-      if(this.value === "matrix") {
-        canvas.style.display = "block";
-        matrixInterval = setInterval(drawMatrix, 50);
-      } else if(this.value === "dark") {
-        canvas.style.display = "none";
-        clearInterval(matrixInterval);
-        document.body.style.backgroundColor = "#0b0b0b";
-      }
-    });
-
-    // Watchlist
-    const marquee = document.createElement("div");
-    marquee.className = "watchlist-bar";
-    document.body.prepend(marquee);
+    const marquee = document.getElementById("watchlistContent");
 
     async function loadWatchlist() {
       try {
@@ -294,14 +256,13 @@
           const color = change >= 0 ? "#00ff00" : "#ff4444";
           return `
             <span class="token">
-              <a href="https://dexscreener.com/solana/${pair.pairAddress}" target="_blank">
-                ${symbol}
-              </a> 
-              <span style="color:${color}">${change.toFixed(2)}%</span> 
+              <a href="https://dexscreener.com/solana/${pair.pairAddress}" target="_blank">${symbol}</a>
+              <span style="color:${color}">${change.toFixed(2)}%</span>
               <span>${cap}</span>
             </span>
           `;
         }).join(" • ");
+
       } catch (err) {
         console.error(err);
         marquee.innerHTML = "Erro ao carregar dados.";
@@ -309,7 +270,51 @@
     }
 
     loadWatchlist();
-    setInterval(loadWatchlist, 60000); // atualiza a cada 1 min
+    setInterval(loadWatchlist, 60000);
+
+    // === Matrix animation ===
+    const canvas = document.getElementById("matrix");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@$%&*+-";
+    const fontSize = 20;
+    const columns = canvas.width / fontSize;
+    const drops = Array.from({length: columns}, () => Math.random() * canvas.height);
+
+    function drawMatrix() {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#00ff00";
+      ctx.font = fontSize + "px monospace";
+
+      drops.forEach((y, i) => {
+        const text = letters.charAt(Math.floor(Math.random() * letters.length));
+        ctx.fillText(text, i * fontSize, y);
+        drops[i] = y > canvas.height ? 0 : y + fontSize;
+      });
+    }
+
+    let matrixInterval = setInterval(drawMatrix, 50);
+
+    window.addEventListener("resize", () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    // Troca de tema
+    const themeSelect = document.getElementById("themeSelect");
+    themeSelect.addEventListener("change", function() {
+      if(this.value === "matrix") {
+        canvas.style.display = "block";
+        matrixInterval = setInterval(drawMatrix, 50);
+      } else {
+        canvas.style.display = "none";
+        clearInterval(matrixInterval);
+        document.body.style.backgroundColor = "#0b0b0b";
+      }
+    });
   </script>
 </body>
 </html>
