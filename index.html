@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Crypto Projects Hub</title>
+  <title>Dev Twenty Seven</title>
   <style>
     /* Reset e fundo full screen */
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -40,22 +40,52 @@
       padding: 2rem;
     }
 
+    /* Título principal neon */
     h1#main-header {
-      font-size: 4rem;
+      font-size: 5rem;
       color: #00ff00;
-      text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 30px #00ff99;
+      text-shadow: 
+        2px 2px 0 #000000,
+        -2px 2px 0 #000000,
+        2px -2px 0 #000000,
+        -2px -2px 0 #000000,
+        0 0 5px #00ff00,
+        0 0 10px #00ff00,
+        0 0 20px #00ff00;
       animation: glow 1.5s infinite alternate;
     }
 
-    @keyframes glow {
-      from { text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00, 0 0 20px #00ff00; }
-      to { text-shadow: 0 0 15px #00ff00, 0 0 30px #00ff99, 0 0 60px #00ffcc; }
+    /* Subtítulo do título principal */
+    p.subtitle-main {
+      font-size: 2rem;
+      color: #cccccc;
+      margin-bottom: 2rem;
     }
 
-    p.subtitle {
-      font-size: 1.5rem;
-      color: #00ff99;
+    /* Título menor (Crypto Projects Hub) */
+    h2#secondary-title {
+      font-size: 2.5rem;
+      color: #00ff00;
+      text-shadow: 
+        1px 1px 0 #000000,
+        -1px 1px 0 #000000,
+        1px -1px 0 #000000,
+        -1px -1px 0 #000000,
+        0 0 3px #00ff00,
+        0 0 6px #00ff00;
+      margin-top: 1rem;
+      animation: glow 1.5s infinite alternate;
+    }
+
+    p.subtitle-secondary {
+      font-size: 1.2rem;
+      color: #aaaaaa;
       margin-bottom: 2rem;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 2px 2px 0 #000, -2px 2px 0 #000, 2px -2px 0 #000, -2px -2px 0 #000, 0 0 5px #00ff00, 0 0 10px #00ff00, 0 0 20px #00ff00; }
+      to   { text-shadow: 2px 2px 0 #000, -2px 2px 0 #000, 2px -2px 0 #000, -2px -2px 0 #000, 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 40px #00ff00; }
     }
 
     h3 {
@@ -64,10 +94,11 @@
       text-shadow: 0 0 5px #00ff99;
     }
 
+    /* Projetos com hover efeito neon */
     .project {
       font-weight: bold;
       color: #00ff00;
-      text-shadow: 0 0 3px #00ff00;
+      text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000;
       margin: 0.5rem 0;
       transition: all 0.3s ease-in-out;
     }
@@ -98,9 +129,13 @@
   <canvas id="matrix"></canvas>
 
   <div class="content">
-    <!-- Cabeçalho -->
-    <h1 id="main-header">Crypto Projects Hub</h1>
-    <p class="subtitle" id="sub-header">Exploring the future of tokens and digital assets.</p>
+    <!-- Novo título principal -->
+    <h1 id="main-header">Dev Twenty Seven</h1>
+    <p class="subtitle-main">Welcome to my crypto and dev projects hub.</p>
+
+    <!-- Título menor antigo -->
+    <h2 id="secondary-title">Crypto Projects Hub</h2>
+    <p class="subtitle-secondary">Exploring the future of tokens and digital assets.</p>
 
     <!-- Projetos -->
     <h3>🔹 Featured Projects</h3>
@@ -117,7 +152,7 @@
     </p>
 
     <!-- Rodapé -->
-    <footer id="footer-name">© 2025 Crypto Projects Hub. All Rights Reserved.</footer>
+    <footer id="footer-name">© 2025 Dev Twenty Seven. All Rights Reserved.</footer>
   </div>
 
   <script>
