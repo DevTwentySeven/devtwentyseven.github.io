@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Charts</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 100%;
+    min-height: 100%;
+    background-color: #0b0b0b;
+    font-family: 'Courier New', monospace;
+    color: #00ff00;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  canvas#matrix {
+    position: fixed; top:0; left:0; width:100%; height:100%; z-index:0; display:block;
+  }
+
+  .content { position: relative; z-index:1; width:100%; display:flex; flex-direction:column; justify-content:flex-start; align-items:center; text-align:center; padding:3rem 1rem; }
+
+  .theme-selector {
+    position: fixed;
+    top: 45px;
+    right: 1rem;
+    z-index: 10000;
+    background-color: rgba(0,0,0,0.5);
+    border: 1px solid #00ff00;
+    border-radius: 5px;
+    padding: 0.3rem 0.6rem;
+    color: #00ff00;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .theme-selector select {
+    background: transparent;
+    color: #00ff00;
+    border: none;
+    outline: none;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .content * { text-shadow:1px 1px 0 #000,-1px 1px 0 #000,1px -1px 0 #000,-1px -1px 0 #000; }
+  h1#main-header { font-size:5rem; color:#00ff00; animation: glow 1.5s infinite alternate; margin-bottom:0.5rem; }
+  p.subtitle-main, p.subtitle-secondary { font-size:2rem; color:#fff; margin-bottom:2rem; animation: pulseGlow 2s infinite alternate; }
+  @keyframes pulseGlow { from { text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000,0 0 5px #00ff00,0 0 10px #00ff00;} to { text-shadow: 1px 1px 0 #000, -1px 1px 0 #000,1px -1px 0 #000,-1px -1px 0 #000,0 0 15px #00ff00,0 0 30px #00ff00; } }
+  h2#secondary-title { font-size:2.5rem; color:#00ff00; margin-top:1rem; animation: glow 1.5s infinite alternate; }
+  @keyframes glow { from{ text-shadow: 1px1px0 #000,-1px1px0 #000,1px-1px0 #000,-1px-1px0 #000,0 0 10px #00ff00,0 0 20px #00ff00,0 0 30px #00ff99; } to{ text-shadow: 1px1px0 #000,-1px1px0 #000,1px-1px0 #000,-1px-1px0 #000,0 0 20px #00ff00,0 0 40px #00ff00,0 0 60px #00ff99;} }
+  h3 { color:#fff; text-shadow:1px 1px 2px #000; margin-top:2rem; }
+  .project { font-weight:bold; color:#00ff00; background-color: rgba(0,0,0,0.85); padding:0.5rem 1rem; margin:0.5rem 0; border-radius:5px; transition:all 0.3s ease-in-out; text-shadow:1px 1px 2px #000; }
+  .project a { color:#fff; text-decoration:none; font-weight:bold; text-shadow:1px 1px 2px #000; transition:color 0.3s ease-in-out; }
+  .project:hover { transform: scale(1.05); box-shadow: 0 0 10px #00ff00,0 0 20px #00ff99; }
+  .project:hover a { color:#00ffcc; }
+  .social-links a { color:#fff; text-decoration:none; font-weight:bold; text-shadow:1px1px2px #ccc; margin:0 0.5rem; transition:color 0.3s ease-in-out,text-shadow 0.3s ease-in-out;}
+  .social-links a:hover { color:#00ffcc; text-shadow:0 0 10px #00ffcc; }
+  footer { color:#555; margin-top:3rem; }
+
+  /* Ticker styles */
+  .ticker-bar { position:fixed; top:0; left:0; width:100%; height:40px; background:#000; display:flex; align-items:center; overflow:hidden; border-bottom:1px solid #00ff00; z-index:9999; }
+  .ticker-move { display:flex; white-space:nowrap; }
+  .token { display:flex; align-items:center; margin:0 15px; padding:4px 8px; background: rgba(0,0,0,0.7); border-radius:4px; cursor:pointer; transition:all 0.2s ease; text-shadow:1px1px0 #000; }
+  .token:hover { background: rgba(0,255,0,0.2); }
+  .token img { width:16px; height:16px; margin-right:6px; border-radius:50%; }
+  .token span { margin-right:6px; }
+  .positive { color:#00ff00; }
+  .negative { color:#ff4444; }
+
+  /* Charts container */
+  .charts-container {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    margin-top: 2rem;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .chart-box {
+    flex: 1 1 45%;
+    background: rgba(0,0,0,0.85);
+    border: 1px solid #00ff00;
+    border-radius: 8px;
+    padding: 0.5rem;
+    position: relative;
+  }
+
+  .chart-box iframe {
+    width: 100%;
+    height: 800px;
+    border: none;
+  }
+
+  /* Chart input control */
+  .chart-input {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+
+  .chart-input input {
+    width: 70%;
+    padding: 0.4rem;
+    border: 1px solid #00ff00;
+    border-radius: 4px;
+    background: black;
+    color: #00ff00;
+  }
+
+  .chart-input button {
+    padding: 0.4rem 0.8rem;
+    margin-left: 0.5rem;
+    border: 1px solid #00ff00;
+    border-radius: 4px;
+    background: black;
+    color: #00ff00;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<div class="ticker-bar">
+  <div id="ticker" class="ticker-move"></div>
+</div>
+
+<div class="theme-selector">
+  Theme:
+  <select id="themeSelect">
+    <option value="matrix">Matrix</option>
+    <option value="dark">Dark</option>
+  </select>
+</div>
+
+<canvas id="matrix"></canvas>
+
+<div class="content">
+  <h1 id="main-header">Charts</h1>
+
+  <!-- === Input único para atualizar os dois charts === -->
+  <div class="chart-input">
+    <input type="text" id="tokenAddress" placeholder="Contract Address">
+    <button onclick="updateCharts()">Update Charts</button>
+  </div>
+
+  <!-- === Charts container === -->
+  <div class="charts-container">
+    <!-- Chart 1 -->
+    <div class="chart-box">
+      <iframe id="chart1" src="https://dexscreener.com/solana/9A2jUbgoDY97fruKHXvDd7eQiq4xvnW3By1BfH1Bwn9Y?embed=1&loadChartSettings=0&chartDefaultOnMobile=1&trades=1&info=0&chartTheme=dark&theme=dark&chartStyle=1&chartType=marketCap&interval=5"></iframe>
+    </div>
+
+    <!-- Chart 2 -->
+    <div class="chart-box">
+      <iframe id="chart2" src="https://dexscreener.com/solana/9A2jUbgoDY97fruKHXvDd7eQiq4xvnW3By1BfH1Bwn9Y?embed=1&loadChartSettings=0&chartDefaultOnMobile=0&trades=1&info=1&chartTheme=dark&theme=dark&chartStyle=1&chartType=marketCap&interval=15"></iframe>
+    </div>
+
+
+  </div>
+
+  <h3>🔗 Connect</h3>
+  <p class="social-links">
+    <a href="https://x.com/devtwentyseven">Twitter</a> |
+    <a href="#">Advertise</a> |
+    <a href="#">About</a>
+  </p>
+  <div class="project"><a href="index">Home</a></div>
+  <footer>© 2025 Dev Twenty Seven. All Rights Reserved.</footer>
+</div>
+
+<script>
+  // === Matrix effect ===
+  const canvas = document.getElementById("matrix");
+  const ctx = canvas.getContext("2d");
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@$%&*+-";
+  const fontSize = 20;
+  const columns = canvas.width / fontSize;
+  const drops = Array.from({length: columns},()=>Math.random()*canvas.height);
+
+  function drawMatrix(){
+    ctx.fillStyle="rgba(0,0,0,0.05)";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle="#00ff00";
+    ctx.font=fontSize+"px monospace";
+    drops.forEach((y,i)=>{
+      const text=letters.charAt(Math.floor(Math.random()*letters.length));
+      ctx.fillText(text,i*fontSize,y);
+      drops[i]=y+fontSize>canvas.height?0:y+fontSize;
+    });
+  }
+
+  let matrixInterval = setInterval(drawMatrix,50);
+  window.addEventListener("resize",()=>{ canvas.width=window.innerWidth; canvas.height=window.innerHeight; });
+
+  const themeSelect=document.getElementById("themeSelect");
+  themeSelect.addEventListener("change",function(){
+    if(this.value==="matrix"){ canvas.style.display="block"; matrixInterval=setInterval(drawMatrix,50);}
+    else{ canvas.style.display="none"; clearInterval(matrixInterval); document.body.style.backgroundColor="#0b0b0b";}
+  });
+
+  // === Watchlist ticker ===
+  const tokensWatchlist=[
+    "9A2jUbgoDY97fruKHXvDd7eQiq4xvnW3By1BfH1Bwn9Y", // DEEP
+    "HTU9PssaFxVBXM8KphyVqLeixrUVuubffAHBp9vRpump", // MAHA
+    "AtPNZ3Rwcezea16xkjkxULzCMKpSbS2rVEirVfzrnEa6", // GOLD
+    "vtUzXyowSMsNUwiZMLNufySoeW9ehaPAVr7YsYQpump", // MARV
+    "FRsV3m924aGpLMuEekoo3JkkMt1oopaM4JY9ki5YLXrp"  // XVM
+  ];
+
+  function formatNumber(num){
+    if(num>=1e12) return(num/1e12).toFixed(2)+"T";
+    if(num>=1e9) return(num/1e9).toFixed(2)+"B";
+    if(num>=1e6) return(num/1e6).toFixed(2)+"M";
+    if(num>=1e3) return(num/1e3).toFixed(2)+"K";
+    return num.toFixed(2);
+  }
+
+  async function fetchTokenInfo(address){
+    try{
+      const res=await fetch(`https://api.dexscreener.com/latest/dex/tokens/${address}`);
+      const data=await res.json();
+      if(!data.pairs||data.pairs.length===0) return null;
+      const pair=data.pairs.find(p=>p.quoteToken.symbol==="USDC")||data.pairs[0];
+      return{
+        symbol:pair.baseToken.symbol,
+        icon:pair.info?.imageUrl||"",
+        marketCap:pair.fdv||pair.marketCap||pair.liquidity?.usd||0,
+        change1h:pair.priceChange?.h1||0,
+        address
+      };
+    }catch(e){console.error(e); return null;}
+  }
+
+  async function buildTicker(){
+    const tickerEl=document.getElementById("ticker");
+    tickerEl.innerHTML="";
+    const tokenInfos = await Promise.all(tokensWatchlist.map(fetchTokenInfo));
+    const validTokens = tokenInfos.filter(t=>t);
+
+    const fullList = [...validTokens, ...validTokens];
+
+    fullList.forEach(info=>{
+      const div=document.createElement("div");
+      div.className="token";
+      div.innerHTML=`${info.icon?`<img src="${info.icon}" alt="${info.symbol}">`:""}
+                     <span>${info.symbol}</span>
+                     <span>$${formatNumber(info.marketCap)}</span>
+                     <span class="${info.change1h>=0?"positive":"negative"}">${info.change1h>=0?"+":""}${info.change1h.toFixed(2)}%</span>`;
+      div.addEventListener("click",()=>window.open(`https://dexscreener.com/solana/${info.address}`,"_blank"));
+      tickerEl.appendChild(div);
+    });
+
+    tickerEl.style.animation="none";
+    void tickerEl.offsetWidth;
+    tickerEl.style.animation="tickerScroll 60s linear infinite";
+  }
+
+  buildTicker();
+  setInterval(buildTicker,60000);
+
+  // === update charts ===
+  function updateCharts(){
+    const address=document.getElementById("tokenAddress").value.trim();
+    if(!address) return;
+    document.getElementById("chart1").src=`https://dexscreener.com/solana/${address}?embed=1&loadChartSettings=0&chartDefaultOnMobile=1&trades=1&info=0&chartTheme=dark&theme=dark&chartStyle=1&chartType=marketCap&interval=5`;
+    document.getElementById("chart2").src=`https://dexscreener.com/solana/${address}?embed=1&loadChartSettings=0&chartDefaultOnMobile=0&trades=1&info=1&chartTheme=dark&theme=dark&chartStyle=1&chartType=marketCap&interval=15`;
+
+  }
+</script>
+
+<style>
+@keyframes tickerScroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+</style>
+</body>
+</html>
