@@ -6,12 +6,12 @@
     <title>27 coin</title>
     <meta name="description" content="27 - Twenty Seven Official" />
     <meta name="author" content="27 Gang" />
-    <link rel="icon" href="assets/icons/27-icon.png" type="image/png">
+    <link rel="icon" href="27-icon.png" type="image/png">
 
     <meta property="og:title" content="27" />
     <meta property="og:description" content="27 - Twenty Seven Official" />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="assets/icons/27-icon.png" />
+    <meta property="og:image" content="27-icon.png" />
 
     <style>
         body {
@@ -35,14 +35,15 @@
         }
         #ascii-art {
             color: green;
-            font-size: 65px;
-            text-align: left;
+            font-size: 60px; /* ajuste até ficar legível */
             margin: auto;
             display: flex;
-            justify-content: right;
+            justify-content: center;
             align-items: center;
             flex-grow: 1;
-            white-space: pre;
+            white-space: pre;       /* mantém os espaços */
+            font-family: monospace; /* garante alinhamento */
+            line-height: 1.2;       /* opcional, melhora espaçamento vertical */
         }
         .buttons {
             display: flex;
@@ -72,15 +73,14 @@
 <body>
     <div id="contract" onclick="navigator.clipboard.writeText(this.innerText)">CONTRACT</div>
     <div id="ascii-art">
- ____ ____
-|___  \ ___ |
-  __)  |    /  /
- /  __/    /  /
-|_____ /_/
-
-</div>
+ ____ _____
+|___ \___  |
+  __) | / /
+ / __/ / /
+|_____/_/
+    </div>
     <div class="buttons">
-        <a href="https://twitter.com" target="_blank"><button>Follow on X</button></a>
+        <a href="https://x.com/27C0IN" target="_blank"><button>Follow on X</button></a>
         <a href="https://www.tiktok.com/tag/27" target="_blank"><button>TikTok</button></a>
         <a href="https://dexscreener.com" target="_blank"><button>DexScreener</button></a>
         <a href="https://dextools.io" target="_blank"><button>DexTools</button></a>
@@ -91,3 +91,4 @@
     </script>
 </body>
 </html>
+
