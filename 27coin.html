@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASCII Page</title>
+    <style>
+        body {
+            background-color: black;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        #contract {
+            color: green;
+            padding: 10px;
+            border: 1px solid green;
+            cursor: pointer;
+            text-align: center;
+            position: fixed;
+            top: 0;
+            width: 100%;
+        }
+        #ascii-art {
+            color: green;
+            font-size: 35px;
+            text-align: left;
+            margin: auto;
+            display: flex;
+            justify-content: right;
+            align-items: center;
+            flex-grow: 1;
+            white-space: pre;
+        }
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #222;
+        }
+        .buttons button {
+            background-color: #333;
+            color: green;
+            border: 1px solid green;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        .buttons button:hover {
+            background-color: #555;
+        }
+        a {
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="contract" onclick="navigator.clipboard.writeText(this.innerText)">CONTRATO</div>
+    <div id="ascii-art">
+ ____ ____
+|___  \ ___ |
+  __)  |    /  /
+ /  __/    /  /
+|_____ /_/
+
+</div>
+    <div class="buttons">
+        <a href="https://twitter.com" target="_blank"><button>Follow on X</button></a>
+        <a href="https://www.tiktok.com/tag/27" target="_blank"><button>TikTok</button></a>
+        <a href="https://dexscreener.com" target="_blank"><button>DexScreener</button></a>
+        <a href="https://dextools.io" target="_blank"><button>DexTools</button></a>
+    </div>
+    <a href="#" download="index.html" style="display:none;">Download</a>
+    <script>
+        document.querySelector('a[download]').href = 'data:text/html;charset=utf-8,' + encodeURIComponent(document.documentElement.outerHTML);
+    </script>
+</body>
+</html>
