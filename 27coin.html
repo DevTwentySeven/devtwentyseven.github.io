@@ -15,55 +15,77 @@
 
     <style>
         body {
-            background-color: black;
+            background-color: #0b0b0b;
             display: flex;
             flex-direction: column;
             height: 100vh;
             margin: 0;
-            font-family: Arial, sans-serif;
+            font-family: 'Courier New', monospace;
+            color: #00ff00;
+        }
+        /* Glow efeito */
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00, 0 0 20px #00ff99;
+            }
+            to {
+                text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 40px #00ff99;
+            }
         }
         #contract {
-            color: green;
+            color: #00ff00;
             padding: 10px;
-            border: 1px solid green;
+            border: 1px solid #00ff00;
             cursor: pointer;
             text-align: center;
             align-items: center;
             position: fixed;
             top: 0;
             width: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            font-weight: bold;
+            animation: glow 1.5s infinite alternate;
         }
         #ascii-art {
-            color: green;
-            font-size: 60px; /* ajuste até ficar legível */
+            color: #00ff00;
+            font-size: 50px;
             margin: auto;
             display: flex;
             justify-content: center;
             align-items: center;
             flex-grow: 1;
-            white-space: pre;       /* mantém os espaços */
-            font-family: monospace; /* garante alinhamento */
-            line-height: 1.2;       /* opcional, melhora espaçamento vertical */
+            white-space: pre;
+            font-family: monospace;
+            line-height: 1.2;
+            text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff99;
         }
         .buttons {
             display: flex;
             justify-content: center;
-            gap: 10px;
-            padding: 10px;
+            gap: 15px;
+            padding: 15px;
             position: fixed;
             bottom: 0;
             width: 100%;
-            background-color: #222;
+            background-color: #111;
+            border-top: 1px solid #00ff00;
         }
         .buttons button {
-            background-color: #333;
-            color: green;
-            border: 1px solid green;
-            padding: 10px 20px;
+            background-color: rgba(0, 0, 0, 0.85);
+            color: #00ff00;
+            border: 1px solid #00ff00;
+            padding: 12px 25px;
             cursor: pointer;
+            font-weight: bold;
+            border-radius: 5px;
+            text-shadow: 0 0 5px #00ff00;
+            transition: all 0.3s ease-in-out;
         }
         .buttons button:hover {
-            background-color: #555;
+            background-color: #000;
+            box-shadow: 0 0 10px #00ff00, 0 0 20px #00ff99;
+            color: #00ffcc;
+            transform: scale(1.05);
         }
         a {
             text-decoration: none;
@@ -87,8 +109,8 @@
     </div>
     <a href="#" download="index.html" style="display:none;">Download</a>
     <script>
-        document.querySelector('a[download]').href = 'data:text/html;charset=utf-8,' + encodeURIComponent(document.documentElement.outerHTML);
+        document.querySelector('a[download]').href =
+          'data:text/html;charset=utf-8,' + encodeURIComponent(document.documentElement.outerHTML);
     </script>
 </body>
 </html>
-
