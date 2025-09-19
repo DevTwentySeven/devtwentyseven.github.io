@@ -1,35 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Solana Wallet Tools</title>
-    <meta name="description" content="Solana Wallet Tools" />
-    <meta name="author" content="Dev Twenty Seven" />
-    <link rel="icon" href="/assets/icons/27-mini-icon.png" type="image/png">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solana Wallet Tools</title>
+<meta name="description" content="Solana Wallet Tools" />
+<meta name="author" content="Dev Twenty Seven" />
+<link rel="icon" href="/assets/icons/27-mini-icon.png" type="image/png">
 
-    <meta property="og:title" content="Solana Wallet Tools" />
-    <meta property="og:description" content="Solana Wallet Tools" />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="/assets/icons/27-mini-icon.png" />
-    <style>
-        body { font-family: sans-serif; background:#111; color:#eee; padding:20px;}
-        input, button { margin:5px; padding:8px; font-size:14px; border-radius:5px;}
-        button { cursor:pointer; background:#512da8; color:white; border:none;}
-        button:disabled { background:#444; cursor:not-allowed;}
-        a { color:#4fc3f7; text-decoration:none;}
-        #status { word-wrap: break-word; }
-    </style>
+<style>
+body { font-family: sans-serif; background:#111; color:#eee; padding:20px;}
+input, button { margin:5px; padding:8px; font-size:14px; border-radius:5px;}
+button { cursor:pointer; background:#512da8; color:white; border:none;}
+button:disabled { background:#444; cursor:not-allowed;}
+a { color:#4fc3f7; text-decoration:none;}
+#status { word-wrap: break-word; }
+#qrcode { margin-top:10px; }
+</style>
 </head>
 
 <body>
 
 <h1>Solana Mainnet Dashboard</h1>
 
+<!-- Wallet Control Buttons -->
 <button id="connectBtn">🔗 Connect Wallet</button>
 <button id="disconnectBtn" disabled>❌ Disconnect Wallet</button>
 <button id="refreshBtn" disabled>🔄 Refresh</button>
+
 <p id="walletAddress">Wallet: not connected</p>
+
+<!-- Copy and QR buttons -->
+<button id="copyBtn" disabled>📋 Copy Address</button>
+<button id="qrcodeBtn" disabled>🔳 Generate QR Code</button>
+<div id="qrcode"></div>
 
 <h3>Balance:</h3>
 <p id="balance">-</p>
@@ -47,6 +51,9 @@
 
 <p id="status">ℹ️ Connect your Phantom wallet to get started. For better performance, configure your own RPC at QuickNode or Ankr.</p>
 
+<!-- Include QRCode library -->
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+
 <script type="module">
 import {
   Connection,
@@ -56,6 +63,9 @@ import {
   LAMPORTS_PER_SOL
 } from "https://esm.sh/@solana/web3.js@1.95.3";
 
+// ------------------------
+// Variables and DOM elements
+// ------------------------
 let provider = null;
 let pubKey = null;
 let connection = null;
@@ -75,8 +85,15 @@ const statusEl = document.getElementById("status");
 const destInput = document.getElementById("destInput");
 const amountInput = document.getElementById("amountInput");
 const txHistory = document.getElementById("txHistory");
+const copyBtn = document.getElementById("copyBtn");
+const qrcodeBtn = document.getElementById("qrcodeBtn");
+const qrcodeDiv = document.getElementById("qrcode");
 
-// Sleep function
+// ------------------------
+// Helper functions
+// ------------------------
+
+// Sleep function for retry/backoff
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 // Connect to RPC with fallback
@@ -92,7 +109,7 @@ async function updateConnection() {
       currentRpcIndex = (currentRpcIndex + 1) % RPC_ENDPOINTS.length;
     }
   }
-  statusEl.textContent = "❌ Failed to connect to all RPCs. Configure your own RPC at https://www.quicknode.com or https://www.ankr.com.";
+  statusEl.textContent = "❌ Failed to connect to all RPCs. Configure your own RPC at QuickNode or Ankr.";
   return false;
 }
 
@@ -106,7 +123,11 @@ const getProvider = () => {
   return null;
 };
 
-// Update balance with retry
+// ------------------------
+// Balance & Transaction functions
+// ------------------------
+
+// Update wallet balance with retry/fallback
 async function updateBalance(attempts = 3, delay = 2000) {
   if (!pubKey || !connection) {
     balanceEl.textContent = "Wallet or connection not available.";
@@ -119,19 +140,19 @@ async function updateBalance(attempts = 3, delay = 2000) {
       return;
     } catch (err) {
       console.error(`Attempt ${i + 1} - Error fetching balance:`, err);
-      if ((err.message.includes("Failed to fetch") || err.message.includes("401") || err.message.includes("403")) && i < attempts - 1) {
+      if (i < attempts - 1) {
         currentRpcIndex = (currentRpcIndex + 1) % RPC_ENDPOINTS.length;
         await updateConnection();
         await sleep(delay * (i + 1));
         continue;
       }
-      balanceEl.textContent = `Error fetching balance: ${err.message}. Configure your own RPC at https://www.quicknode.com.`;
+      balanceEl.textContent = `Error fetching balance: ${err.message}. Configure your own RPC at QuickNode.`;
       return;
     }
   }
 }
 
-// Load transaction history with retry
+// Load recent transactions with retry/fallback
 async function loadTransactionHistory(attempts = 3, delay = 2000) {
   if (!pubKey || !connection) {
     txHistory.innerHTML = "<li>Wallet or connection not available.</li>";
@@ -153,38 +174,23 @@ async function loadTransactionHistory(attempts = 3, delay = 2000) {
       return;
     } catch (err) {
       console.error(`Attempt ${i + 1} - Error loading history:`, err);
-      if ((err.message.includes("Failed to fetch") || err.message.includes("401") || err.message.includes("403")) && i < attempts - 1) {
+      if (i < attempts - 1) {
         currentRpcIndex = (currentRpcIndex + 1) % RPC_ENDPOINTS.length;
         await updateConnection();
         await sleep(delay * (i + 1));
         continue;
       }
-      txHistory.innerHTML = `<li>History unavailable: ${err.message}. Configure your own RPC at https://www.quicknode.com.</li>`;
+      txHistory.innerHTML = `<li>History unavailable: ${err.message}. Configure your own RPC at QuickNode.</li>`;
       return;
     }
   }
 }
 
-// Auto-update (disabled by default)
-let intervalId = null;
-function startAutoUpdate() {
-  if (intervalId) clearInterval(intervalId);
-  intervalId = setInterval(async () => {
-    if (pubKey && connection) {
-      await updateBalance();
-      await loadTransactionHistory();
-    }
-  }, 60000);
-}
+// ------------------------
+// Wallet Actions
+// ------------------------
 
-function stopAutoUpdate() {
-  if (intervalId) {
-    clearInterval(intervalId);
-    intervalId = null;
-  }
-}
-
-// Connect Wallet
+// Connect wallet
 connectBtn.addEventListener("click", async () => {
   provider = getProvider();
   if (!provider) return;
@@ -193,15 +199,16 @@ connectBtn.addEventListener("click", async () => {
     const resp = await provider.connect();
     pubKey = new PublicKey(resp.publicKey.toString());
     walletAddress.textContent = `Wallet: ${pubKey.toBase58()}`;
+
     disconnectBtn.disabled = false;
     sendBtn.disabled = false;
     refreshBtn.disabled = false;
+    copyBtn.disabled = false;
+    qrcodeBtn.disabled = false;
 
     if (!await updateConnection()) return;
     await updateBalance();
     await loadTransactionHistory();
-    // Uncomment the line below to enable auto updates
-    // startAutoUpdate();
 
     statusEl.textContent = "✅ Connected to Mainnet Beta!";
   } catch (err) {
@@ -210,7 +217,7 @@ connectBtn.addEventListener("click", async () => {
   }
 });
 
-// Disconnect Wallet
+// Disconnect wallet
 disconnectBtn.addEventListener("click", async () => {
   if (!provider) return;
   try {
@@ -223,14 +230,16 @@ disconnectBtn.addEventListener("click", async () => {
     sendBtn.disabled = true;
     disconnectBtn.disabled = true;
     refreshBtn.disabled = true;
-    stopAutoUpdate();
+    copyBtn.disabled = true;
+    qrcodeBtn.disabled = true;
+    qrcodeDiv.innerHTML = "";
   } catch (err) {
     console.error("Error disconnecting:", err);
     statusEl.textContent = `❌ Error disconnecting: ${err.message}`;
   }
 });
 
-// Manual Refresh
+// Manual refresh
 refreshBtn.addEventListener("click", async () => {
   statusEl.textContent = "🔄 Refreshing...";
   await updateBalance();
@@ -238,7 +247,30 @@ refreshBtn.addEventListener("click", async () => {
   statusEl.textContent = pubKey ? "✅ Refresh complete!" : "⚠️ Connect the wallet first.";
 });
 
-// Detect direct disconnect in Phantom
+// Copy wallet address to clipboard
+copyBtn.addEventListener("click", () => {
+  if (!pubKey) return;
+  navigator.clipboard.writeText(pubKey.toBase58())
+    .then(() => statusEl.textContent = "✅ Wallet address copied to clipboard!")
+    .catch(err => statusEl.textContent = `❌ Copy failed: ${err.message}`);
+});
+
+// Generate QR code for wallet address
+qrcodeBtn.addEventListener("click", () => {
+  if (!pubKey) return;
+  qrcodeDiv.innerHTML = "";
+  QRCode.toCanvas(pubKey.toBase58(), { width: 150 }, (err, canvas) => {
+    if (err) {
+      console.error(err);
+      statusEl.textContent = `❌ QR code generation failed: ${err.message}`;
+      return;
+    }
+    qrcodeDiv.appendChild(canvas);
+    statusEl.textContent = "🔳 QR code generated!";
+  });
+});
+
+// Detect Phantom direct disconnect
 window.addEventListener("load", () => {
   provider = getProvider();
   if (provider) {
@@ -251,7 +283,9 @@ window.addEventListener("load", () => {
       sendBtn.disabled = true;
       disconnectBtn.disabled = true;
       refreshBtn.disabled = true;
-      stopAutoUpdate();
+      copyBtn.disabled = true;
+      qrcodeBtn.disabled = true;
+      qrcodeDiv.innerHTML = "";
     });
     if (provider.isConnected) {
       provider.connect().catch(() => {});
