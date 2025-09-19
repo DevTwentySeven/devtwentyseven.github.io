@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>27 coin</title>
+    <meta name="description" content="Solana Wallet Tools" />
+    <meta name="author" content="27 Gang" />
+    <link rel="icon" href="../assets/icons/27-icon.png" type="image/png">
+
+    <meta property="og:title" content="27" />
+    <meta property="og:description" content="Solana Wallet Tools" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="../assets/icons/27-icon.png" />
+    <style>
+        body { font-family: sans-serif; background:#111; color:#eee; padding:20px;}
+        input, button { margin:5px; padding:8px; font-size:14px; border-radius:5px;}
+        button { cursor:pointer; background:#512da8; color:white; border:none;}
+        button:disabled { background:#444; cursor:not-allowed;}
+        a { color:#4fc3f7; text-decoration:none;}
+    </style>
+</head>
+
+<body>
+
+<h1>Solana Mainnet Dashboard</h1>
+
+<button id="connectBtn">🔗 Conectar Wallet</button>
+<button id="disconnectBtn">❌ Desconectar Wallet</button>
+<p id="walletAddress">Wallet: não conectada</p>
+
+<h3>Saldo:</h3>
+<p id="balance">-</p>
+
+<h3>Enviar SOL:</h3>
+<label>Destino:</label>
+<input type="text" id="destInput" placeholder="Endereço base58" size="60">
+<label>Valor (SOL):</label>
+<input type="number" id="amountInput" value="0.001" step="0.0001">
+<br>
+<button id="sendBtn">💸 Enviar</button>
+
+<h3>Últimas Transações:</h3>
+<ul id="txHistory"></ul>
+
+<p id="status"></p>
+
+<script type="module">
+import {
+  Connection,
+  PublicKey,
+  SystemProgram,
+  Transaction,
+  LAMPORTS_PER_SOL
+} from "https://esm.sh/@solana/web3.js@1.91.3";
+
+let provider = null;
+let pubKey = null;
+let connection = null;
+
+const connectBtn = document.getElementById("connectBtn");
+const disconnectBtn = document.getElementById("disconnectBtn");
+const sendBtn = document.getElementById("sendBtn");
+const walletAddress = document.getElementById("walletAddress");
+const balanceEl = document.getElementById("balance");
+const status = document.getElementById("status");
+const destInput = document.getElementById("destInput");
+const amountInput = document.getElementById("amountInput");
+const txHistory = document.getElementById("txHistory");
+
+// Detecta Phantom
+const getProvider = () => {
+  if ("phantom" in window) {
+    const anyWindow = window;
+    const provider = anyWindow.phantom?.solana;
+    if (provider?.isPhantom) return provider;
+  }
+  alert("Phantom não encontrada! Instale a extensão.");
+  return null;
+};
+
+// Conectar RPC Mainnet confiável
+function updateConnection() {
+  connection = new Connection("https://api.mainnet.rpcpool.com", "confirmed");
+}
+
+// Atualiza saldo
+async function updateBalance() {
+  if (!pubKey) return;
+  try {
+    const lamports = await connection.getBalance(pubKey);
+    balanceEl.innerText = `${(lamports / LAMPORTS_PER_SOL).toFixed(4)} SOL (Mainnet Beta)`;
+  } catch (err) {
+    console.error(err);
+    balanceEl.innerText = "Erro ao buscar saldo. Verifique RPC ou saldo real.";
+  }
+}
+
+// Carregar histórico de transações (últimas 10)
+async function loadTransactionHistory() {
+  if (!pubKey) return;
+  try {
+    const signatures = await connection.getSignaturesForAddress(pubKey, { limit: 10 });
+    txHistory.innerHTML = "";
+    for (const sigInfo of signatures) {
+      const li = document.createElement("li");
+      li.innerHTML = `<a href="https://explorer.solana.com/tx/${sigInfo.signature}?cluster=mainnet-beta" target="_blank">${sigInfo.signature}</a>`;
+      txHistory.appendChild(li);
+    }
+  } catch (err) {
+    console.error(err);
+    txHistory.innerHTML = "<li>Histórico indisponível. Verifique RPC ou conta.</li>";
+  }
+}
+
+// Atualização automática
+let intervalId = null;
+function startAutoUpdate() {
+  intervalId = setInterval(async () => {
+    await updateBalance();
+    await loadTransactionHistory();
+  }, 5000);
+}
+function stopAutoUpdate() {
+  clearInterval(intervalId);
+  intervalId = null;
+}
+
+// Conectar Wallet
+connectBtn.addEventListener("click", async () => {
+  provider = getProvider();
+  if (!provider) return;
+
+  try {
+    const resp = await provider.connect();
+    pubKey = resp.publicKey;
+    walletAddress.innerText = `Wallet: ${pubKey.toBase58()}`;
+
+    updateConnection();
+    await updateBalance();
+    await loadTransactionHistory();
+    startAutoUpdate();
+
+    status.innerText = "✅ Conectado à Mainnet Beta!";
+    sendBtn.disabled = false;
+  } catch (err) {
+    console.error(err);
+    status.innerText = "❌ Erro ao conectar: " + err.message;
+  }
+});
+
+// Desconectar Wallet
+disconnectBtn.addEventListener("click", async () => {
+  if (!provider) return;
+  try {
+    await provider.disconnect();
+    pubKey = null;
+    walletAddress.innerText = "Wallet: não conectada";
+    balanceEl.innerText = "-";
+    status.innerText = "⚠️ Wallet desconectada";
+    txHistory.innerHTML = "";
+    sendBtn.disabled = true;
+    stopAutoUpdate();
+  } catch (err) {
+    console.error(err);
+    status.innerText = "❌ Erro ao desconectar: " + err.message;
+  }
+});
+
+// Detecta desconexão direta no Phantom
+window.addEventListener("load", () => {
+  if (!provider) return;
+  provider.on("disconnect", () => {
+    pubKey = null;
+    walletAddress.innerText = "Wallet: não conectada";
+    balanceEl.innerText = "-";
+    status.innerText = "⚠️ Wallet desconectada";
+    txHistory.innerHTML = "";
+    sendBtn.disabled = true;
+    stopAutoUpdate();
+  });
+});
+
+// Enviar SOL
+sendBtn.addEventListener("click", async () => {
+  if (!provider || !pubKey) { alert("Conecte a carteira primeiro!"); return; }
+  const destValue = destInput.value.trim();
+  const amountValue = parseFloat(amountInput.value);
+  if (!destValue || isNaN(amountValue) || amountValue <= 0) { alert("Endereço ou valor inválido"); return; }
+
+  try {
+    const toPubkey = new PublicKey(destValue);
+    const transaction = new Transaction().add(
+      SystemProgram.transfer({
+        fromPubkey: pubKey,
+        toPubkey,
+        lamports: amountValue * LAMPORTS_PER_SOL
+      })
+    );
+    transaction.feePayer = pubKey;
+    transaction.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
+
+    const signedTx = await provider.signTransaction(transaction);
+    const signature = await connection.sendRawTransaction(signedTx.serialize());
+    await connection.confirmTransaction(signature);
+
+    status.innerHTML = `✅ Enviado! Tx: <a href="https://explorer.solana.com/tx/${signature}?cluster=mainnet-beta" target="_blank">${signature}</a>`;
+
+    // Atualiza saldo e histórico imediatamente
+    await updateBalance();
+    await loadTransactionHistory();
+  } catch (err) {
+    console.error(err);
+    status.innerText = "❌ Erro ao enviar: " + err.message;
+  }
+});
+</script>
+</body>
+</html>
