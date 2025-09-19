@@ -6,12 +6,12 @@
     <title>Solana Wallet Tools</title>
     <meta name="description" content="Solana Wallet Tools" />
     <meta name="author" content="Dev Twenty Seven" />
-    <link rel="icon" href="../assets/icons/27-icon.png" type="image/png">
+    <link rel="icon" href="/assets/icons/27-mini-icon.png" type="image/png">
 
     <meta property="og:title" content="Solana Wallet Tools" />
     <meta property="og:description" content="Solana Wallet Tools" />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="../assets/icons/27-icon.png" />
+    <meta property="og:image" content="/assets/icons/27-mini-icon.png" />
     <style>
         body { font-family: sans-serif; background:#111; color:#eee; padding:20px;}
         input, button { margin:5px; padding:8px; font-size:14px; border-radius:5px;}
@@ -26,26 +26,26 @@
 
 <h1>Solana Mainnet Dashboard</h1>
 
-<button id="connectBtn">🔗 Conectar Wallet</button>
-<button id="disconnectBtn" disabled>❌ Desconectar Wallet</button>
-<button id="refreshBtn" disabled>🔄 Atualizar</button>
-<p id="walletAddress">Wallet: não conectada</p>
+<button id="connectBtn">🔗 Connect Wallet</button>
+<button id="disconnectBtn" disabled>❌ Disconnect Wallet</button>
+<button id="refreshBtn" disabled>🔄 Refresh</button>
+<p id="walletAddress">Wallet: not connected</p>
 
-<h3>Saldo:</h3>
+<h3>Balance:</h3>
 <p id="balance">-</p>
 
-<h3>Enviar SOL:</h3>
-<label>Destino:</label>
-<input type="text" id="destInput" placeholder="Endereço base58" size="60">
-<label>Valor (SOL):</label>
+<h3>Send SOL:</h3>
+<label>Destination:</label>
+<input type="text" id="destInput" placeholder="Base58 Address" size="60">
+<label>Amount (SOL):</label>
 <input type="number" id="amountInput" value="0.001" step="0.0001" min="0.0001">
 <br>
-<button id="sendBtn" disabled>💸 Enviar</button>
+<button id="sendBtn" disabled>💸 Send</button>
 
-<h3>Últimas Transações:</h3>
+<h3>Recent Transactions:</h3>
 <ul id="txHistory"></ul>
 
-<p id="status"></p>
+<p id="status">ℹ️ Connect your Phantom wallet to get started. For better performance, configure your own RPC at QuickNode or Ankr.</p>
 
 <script type="module">
 import {
@@ -62,7 +62,7 @@ let connection = null;
 let currentRpcIndex = 0;
 const RPC_ENDPOINTS = [
   "https://rpc.ankr.com/solana",
-  "https://solana-mainnet.core.chainstack.com/693b6b3f0a0aead3d53a0104e9f2f7d8",
+  "https://solana-rpc.publicnode.com",
   "https://api.mainnet-beta.solana.com"
 ];
 
@@ -76,40 +76,40 @@ const destInput = document.getElementById("destInput");
 const amountInput = document.getElementById("amountInput");
 const txHistory = document.getElementById("txHistory");
 
-// Função para esperar
+// Sleep function
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-// Conectar RPC com fallback
+// Connect to RPC with fallback
 async function updateConnection() {
   for (let i = 0; i < RPC_ENDPOINTS.length; i++) {
     try {
       connection = new Connection(RPC_ENDPOINTS[currentRpcIndex], "confirmed");
-      console.log(`Conectado ao RPC: ${RPC_ENDPOINTS[currentRpcIndex]}`);
-      statusEl.textContent = `🔗 Conectado ao RPC: ${RPC_ENDPOINTS[currentRpcIndex]}`;
+      console.log(`Connected to RPC: ${RPC_ENDPOINTS[currentRpcIndex]}`);
+      statusEl.textContent = `🔗 Connected to RPC: ${RPC_ENDPOINTS[currentRpcIndex]}`;
       return true;
     } catch (err) {
-      console.error(`Falha ao conectar ao RPC ${RPC_ENDPOINTS[currentRpcIndex]}:`, err);
+      console.error(`Failed to connect to RPC ${RPC_ENDPOINTS[currentRpcIndex]}:`, err);
       currentRpcIndex = (currentRpcIndex + 1) % RPC_ENDPOINTS.length;
     }
   }
-  statusEl.textContent = "❌ Falha ao conectar a todos os RPCs. Verifique sua rede ou configure um RPC próprio.";
+  statusEl.textContent = "❌ Failed to connect to all RPCs. Configure your own RPC at https://www.quicknode.com or https://www.ankr.com.";
   return false;
 }
 
-// Detecta Phantom
+// Detect Phantom wallet
 const getProvider = () => {
   if ("solana" in window) {
     const provider = window.solana;
     if (provider.isPhantom) return provider;
   }
-  alert("Phantom não encontrada! Instale a extensão em https://phantom.app.");
+  alert("Phantom not found! Install the extension at https://phantom.app.");
   return null;
 };
 
-// Atualiza saldo com retry
+// Update balance with retry
 async function updateBalance(attempts = 3, delay = 2000) {
   if (!pubKey || !connection) {
-    balanceEl.textContent = "Wallet ou conexão não disponível.";
+    balanceEl.textContent = "Wallet or connection not available.";
     return;
   }
   for (let i = 0; i < attempts; i++) {
@@ -118,23 +118,23 @@ async function updateBalance(attempts = 3, delay = 2000) {
       balanceEl.textContent = `${(lamports / LAMPORTS_PER_SOL).toFixed(4)} SOL (Mainnet Beta)`;
       return;
     } catch (err) {
-      console.error(`Tentativa ${i + 1} - Erro ao buscar saldo:`, err);
-      if ((err.message.includes("Failed to fetch") || err.message.includes("403")) && i < attempts - 1) {
+      console.error(`Attempt ${i + 1} - Error fetching balance:`, err);
+      if ((err.message.includes("Failed to fetch") || err.message.includes("401") || err.message.includes("403")) && i < attempts - 1) {
         currentRpcIndex = (currentRpcIndex + 1) % RPC_ENDPOINTS.length;
         await updateConnection();
         await sleep(delay * (i + 1));
         continue;
       }
-      balanceEl.textContent = `Erro ao buscar saldo: ${err.message}. Tente novamente.`;
+      balanceEl.textContent = `Error fetching balance: ${err.message}. Configure your own RPC at https://www.quicknode.com.`;
       return;
     }
   }
 }
 
-// Carregar histórico de transações com retry
+// Load transaction history with retry
 async function loadTransactionHistory(attempts = 3, delay = 2000) {
   if (!pubKey || !connection) {
-    txHistory.innerHTML = "<li>Wallet ou conexão não disponível.</li>";
+    txHistory.innerHTML = "<li>Wallet or connection not available.</li>";
     return;
   }
   for (let i = 0; i < attempts; i++) {
@@ -142,7 +142,7 @@ async function loadTransactionHistory(attempts = 3, delay = 2000) {
       const signatures = await connection.getSignaturesForAddress(pubKey, { limit: 10 });
       txHistory.innerHTML = "";
       if (signatures.length === 0) {
-        txHistory.innerHTML = "<li>Sem transações recentes.</li>";
+        txHistory.innerHTML = "<li>No recent transactions.</li>";
         return;
       }
       for (const sigInfo of signatures) {
@@ -152,20 +152,20 @@ async function loadTransactionHistory(attempts = 3, delay = 2000) {
       }
       return;
     } catch (err) {
-      console.error(`Tentativa ${i + 1} - Erro ao carregar histórico:`, err);
-      if ((err.message.includes("Failed to fetch") || err.message.includes("403")) && i < attempts - 1) {
+      console.error(`Attempt ${i + 1} - Error loading history:`, err);
+      if ((err.message.includes("Failed to fetch") || err.message.includes("401") || err.message.includes("403")) && i < attempts - 1) {
         currentRpcIndex = (currentRpcIndex + 1) % RPC_ENDPOINTS.length;
         await updateConnection();
         await sleep(delay * (i + 1));
         continue;
       }
-      txHistory.innerHTML = `<li>Histórico indisponível: ${err.message}. Tente novamente.</li>`;
+      txHistory.innerHTML = `<li>History unavailable: ${err.message}. Configure your own RPC at https://www.quicknode.com.</li>`;
       return;
     }
   }
 }
 
-// Atualização automática
+// Auto-update (disabled by default)
 let intervalId = null;
 function startAutoUpdate() {
   if (intervalId) clearInterval(intervalId);
@@ -174,7 +174,7 @@ function startAutoUpdate() {
       await updateBalance();
       await loadTransactionHistory();
     }
-  }, 60000); // 60s para evitar rate limits
+  }, 60000);
 }
 
 function stopAutoUpdate() {
@@ -184,7 +184,7 @@ function stopAutoUpdate() {
   }
 }
 
-// Conectar Wallet
+// Connect Wallet
 connectBtn.addEventListener("click", async () => {
   provider = getProvider();
   if (!provider) return;
@@ -200,52 +200,53 @@ connectBtn.addEventListener("click", async () => {
     if (!await updateConnection()) return;
     await updateBalance();
     await loadTransactionHistory();
-    startAutoUpdate();
+    // Uncomment the line below to enable auto updates
+    // startAutoUpdate();
 
-    statusEl.textContent = "✅ Conectado à Mainnet Beta!";
+    statusEl.textContent = "✅ Connected to Mainnet Beta!";
   } catch (err) {
-    console.error("Erro ao conectar:", err);
-    statusEl.textContent = `❌ Erro ao conectar: ${err.message}`;
+    console.error("Error connecting:", err);
+    statusEl.textContent = `❌ Error connecting: ${err.message}`;
   }
 });
 
-// Desconectar Wallet
+// Disconnect Wallet
 disconnectBtn.addEventListener("click", async () => {
   if (!provider) return;
   try {
     await provider.disconnect();
     pubKey = null;
-    walletAddress.textContent = "Wallet: não conectada";
+    walletAddress.textContent = "Wallet: not connected";
     balanceEl.textContent = "-";
-    statusEl.textContent = "⚠️ Wallet desconectada";
+    statusEl.textContent = "⚠️ Wallet disconnected";
     txHistory.innerHTML = "";
     sendBtn.disabled = true;
     disconnectBtn.disabled = true;
     refreshBtn.disabled = true;
     stopAutoUpdate();
   } catch (err) {
-    console.error("Erro ao desconectar:", err);
-    statusEl.textContent = `❌ Erro ao desconectar: ${err.message}`;
+    console.error("Error disconnecting:", err);
+    statusEl.textContent = `❌ Error disconnecting: ${err.message}`;
   }
 });
 
 // Manual Refresh
 refreshBtn.addEventListener("click", async () => {
-  statusEl.textContent = "🔄 Atualizando...";
+  statusEl.textContent = "🔄 Refreshing...";
   await updateBalance();
   await loadTransactionHistory();
-  statusEl.textContent = pubKey ? "✅ Atualização concluída!" : "⚠️ Conecte a carteira primeiro.";
+  statusEl.textContent = pubKey ? "✅ Refresh complete!" : "⚠️ Connect the wallet first.";
 });
 
-// Detecta desconexão direta no Phantom
+// Detect direct disconnect in Phantom
 window.addEventListener("load", () => {
   provider = getProvider();
   if (provider) {
     provider.on("disconnect", () => {
       pubKey = null;
-      walletAddress.textContent = "Wallet: não conectada";
+      walletAddress.textContent = "Wallet: not connected";
       balanceEl.textContent = "-";
-      statusEl.textContent = "⚠️ Wallet desconectada";
+      statusEl.textContent = "⚠️ Wallet disconnected";
       txHistory.innerHTML = "";
       sendBtn.disabled = true;
       disconnectBtn.disabled = true;
@@ -258,17 +259,17 @@ window.addEventListener("load", () => {
   }
 });
 
-// Enviar SOL
+// Send SOL
 sendBtn.addEventListener("click", async () => {
   if (!provider || !pubKey || !connection) {
-    alert("Conecte a carteira e verifique a conexão RPC!");
+    alert("Connect the wallet and check RPC connection!");
     return;
   }
   const destValue = destInput.value.trim();
   const amountValue = parseFloat(amountInput.value);
 
   if (!destValue || !amountValue || amountValue <= 0) {
-    alert("Endereço ou valor inválido.");
+    alert("Invalid address or amount.");
     return;
   }
 
@@ -291,13 +292,13 @@ sendBtn.addEventListener("click", async () => {
     const { signature } = await provider.signAndSendTransaction(transaction);
     await connection.confirmTransaction({ signature, blockhash, lastValidBlockHeight });
 
-    statusEl.innerHTML = `✅ Enviado! Tx: <a href="https://explorer.solana.com/tx/${signature}?cluster=mainnet-beta" target="_blank">${signature.slice(0, 8)}...</a>`;
+    statusEl.innerHTML = `✅ Sent! Tx: <a href="https://explorer.solana.com/tx/${signature}?cluster=mainnet-beta" target="_blank">${signature.slice(0, 8)}...</a>`;
 
     await updateBalance();
     await loadTransactionHistory();
   } catch (err) {
-    console.error("Erro ao enviar:", err);
-    statusEl.textContent = `❌ Erro ao enviar: ${err.message}`;
+    console.error("Error sending:", err);
+    statusEl.textContent = `❌ Error sending: ${err.message}`;
   }
 });
 </script>
