@@ -233,7 +233,7 @@ async function loadTransactionHistory(attempts = 3, delay = 2000) {
 // ------------------------
 // Tokens List using DexScreener (fallback to N/A)
 // - Only tokens with amount > 0 will be shown
-// - Attempts to retrieve logo, symbol, name and price via DexScreener
+// - Attempts to retrieve logo, symbol, name, and price via DexScreener
 // - If price available: compute Value (USD) and Value (SOL). Otherwise show "N/A"
 // ------------------------
 async function loadTokens() {
@@ -262,20 +262,20 @@ async function loadTokens() {
 
     let displayed = 0;
 
-    // iterate token accounts and show only those with positive balance
+    // Iterate token accounts and show only those with positive balance
     for (const { account } of tokenAccounts.value) {
       const uiAmount = account.data.parsed.info.tokenAmount.uiAmount;
-      if (!uiAmount || uiAmount === 0) continue; // skip zero balances
+      if (!uiAmount || uiAmount === 0) continue; // Skip zero balances
 
       const mintAddress = account.data.parsed.info.mint;
       const amount = uiAmount;
 
-      // default placeholders
-      let logoURI = "https://via.placeholder.com/24";
-      let symbol = mintAddress.slice(0,6);
+      // Default placeholders
+      let logoURI = "https://via.placeholder.com/28?text=?";
+      let symbol = mintAddress.slice(0, 6);
       let name = "Unknown Token";
-      let priceUsd = null;      // price in USD per token
-      let priceNative = null;   // price in native unit (e.g., SOL) per token (if provided)
+      let priceUsd = null;      // Price in USD per token
+      let priceNative = null;   // Price in native unit (e.g., SOL) per token (if provided)
 
       // Try fetch from DexScreener. Rate-limit-friendly: small delay between requests.
       try {
@@ -283,28 +283,42 @@ async function loadTokens() {
         const dexRes = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${mintAddress}`);
         if (dexRes.ok) {
           const dexData = await dexRes.json();
-          // dexData.pairs is an array of markets. choose first pair that has baseToken info.
+          // dexData.pairs is an array of markets. Choose first pair that has baseToken info.
           const pair = (dexData && Array.isArray(dexData.pairs) && dexData.pairs.length > 0) ? dexData.pairs[0] : null;
           if (pair) {
             // pair.baseToken usually holds token metadata on DexScreener responses
             const base = pair.baseToken || {};
             symbol = base.symbol || symbol;
             name = base.name || name;
-            if (base.logoURI) logoURI = base.logoURI;
+            // DexScreener does not provide logoURI; try to fetch from token list or leave as placeholder
+            // For now, we keep the placeholder as DexScreener doesn't provide a logo
 
             // DexScreener pair may include priceUsd or priceNative fields
             // Try to read priceUsd or price or priceNative. Parse to float if present.
             if (pair.priceUsd) priceUsd = parseFloat(pair.priceUsd);
-            if (!priceUsd && pair.price) priceUsd = parseFloat(pair.price); // fallback
+            if (!priceUsd && pair.price) priceUsd = parseFloat(pair.price); // Fallback
             if (pair.priceNative) priceNative = parseFloat(pair.priceNative);
             // Note: priceNative may represent price in native chain token (SOL) depending on pair.
           }
         } else {
-          // non-OK response: ignore and fallback to N/A
           console.warn(`DexScreener returned ${dexRes.status} for ${mintAddress}`);
         }
       } catch (err) {
         console.warn(`DexScreener lookup failed for ${mintAddress}:`, err);
+      }
+
+      // Try to fetch logo from Solana token list as a fallback
+      try {
+        const tokenListRes = await fetch("https://raw.githubusercontent.com/solana-labs/token-list/main/src/tokens/solana.tokenlist.json");
+        if (tokenListRes.ok) {
+          const tokenList = await tokenListRes.json();
+          const token = tokenList.tokens.find(t => t.address === mintAddress);
+          if (token && token.logoURI) {
+            logoURI = token.logoURI;
+          }
+        }
+      } catch (err) {
+        console.warn(`Failed to fetch token list for logo of ${mintAddress}:`, err);
       }
 
       // Compute values
@@ -316,7 +330,7 @@ async function loadTokens() {
         if (solPriceUSD && solPriceUSD > 0) {
           valueSOL = valueUSD / solPriceUSD;
         } else if (priceNative && !isNaN(priceNative)) {
-          // if dex provided native price (likely in SOL), prefer that
+          // If dex provided native price (likely in SOL), prefer that
           valueSOL = amount * priceNative;
         }
       } else if (priceNative && !isNaN(priceNative)) {
@@ -333,6 +347,9 @@ async function loadTokens() {
       img.src = logoURI;
       img.className = "tokenLogo";
       img.alt = symbol;
+      img.onerror = () => {
+        img.src = "https://via.placeholder.com/28?text=?"; // Fallback if image fails to load
+      };
       tdLogo.appendChild(img);
 
       const tdSymbol = document.createElement("td");
@@ -362,7 +379,7 @@ async function loadTokens() {
       tbody.appendChild(tr);
 
       displayed++;
-      // small delay to be polite to DexScreener / avoid bursts
+      // Small delay to be polite to DexScreener / avoid bursts
       await sleep(150);
     }
 
@@ -493,7 +510,7 @@ window.addEventListener("load", () => {
       qrcodeDiv.innerHTML = "";
     });
     if (provider.isConnected) {
-      // attempt to re-connect silently
+      // Attempt to re-connect silently
       provider.connect().catch(() => {});
     }
   }
