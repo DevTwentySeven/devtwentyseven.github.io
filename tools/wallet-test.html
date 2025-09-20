@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solana Wallet Portfolio</title>
+<meta name="description" content="Solana Wallet Portfolio Dashboard" />
+<meta name="author" content="Dev Twenty Seven" />
+<link rel="icon" href="/assets/icons/27-mini-icon.png" type="image/png">
+
+<style>
+body { font-family: sans-serif; background:#111; color:#eee; padding:20px;}
+input, button { margin:5px; padding:8px; font-size:14px; border-radius:5px;}
+button { cursor:pointer; background:#512da8; color:white; border:none;}
+button:disabled { background:#444; cursor:not-allowed;}
+a { color:#4fc3f7; text-decoration:none;}
+#status { word-wrap: break-word; }
+#qrcode { margin-top:10px; }
+#tokensBox { margin-top:20px; background:#222; padding:10px; border-radius:10px; max-height:400px; overflow-y:auto;}
+.tokenItem { display:flex; align-items:center; margin-bottom:8px; gap:10px; }
+.tokenItem img { width:24px; height:24px; border-radius:12px; }
+.tokenInfo { display:flex; flex-direction:column; }
+</style>
+</head>
+
+<body>
+
+<h1>Solana Wallet Portfolio</h1>
+
+<!-- Wallet Control Buttons -->
+<button id="connectBtn">🔗 Connect Wallet</button>
+<button id="disconnectBtn" disabled>❌ Disconnect Wallet</button>
+<button id="refreshBtn" disabled>🔄 Refresh</button>
+
+<p id="walletAddress">Wallet: not connected</p>
+
+<!-- Copy and QR buttons -->
+<button id="copyBtn" disabled>📋 Copy Address</button>
+<button id="qrcodeBtn" disabled>🔳 Generate QR Code</button>
+<div id="qrcode"></div>
+
+<!-- SOL Price Display -->
+<h3 id="solPrice">SOL Price: - USD</h3>
+
+<h3>Balance:</h3>
+<p id="balance">-</p>
+
+<h3>Send SOL:</h3>
+<label>Destination:</label>
+<input type="text" id="destInput" placeholder="Base58 Address" size="60">
+<label>Amount (SOL):</label>
+<input type="number" id="amountInput" value="0.001" step="0.0001" min="0.0001">
+<br>
+<button id="sendBtn" disabled>💸 Send</button>
+
+<h3>Recent Transactions:</h3>
+<ul id="txHistory"></ul>
+
+<!-- Token list box -->
+<h3>Tokens:</h3>
+<div id="tokensBox">No tokens detected.</div>
+
+<p id="status">ℹ️ Connect your Phantom wallet to get started. For better performance, configure your own RPC at QuickNode or Ankr.</p>
+
+<!-- Include QRCode library -->
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+
+<script type="module">
+import {
+  Connection,
+  PublicKey,
+  SystemProgram,
+  Transaction,
+  LAMPORTS_PER_SOL,
+} from "https://esm.sh/@solana/web3.js@1.95.3";
+import { TOKEN_PROGRAM_ID } from "https://esm.sh/@solana/spl-token@0.2.0";
+
+// ------------------------
+// Variables and DOM elements
+// ------------------------
+let provider = null;
+let pubKey = null;
+let connection = null;
+let currentRpcIndex = 0;
+let solPriceUSD = 0;
+const RPC_ENDPOINTS = [
+  "https://rpc.ankr.com/solana",
+  "https://solana-rpc.publicnode.com",
+  "https://api.mainnet-beta.solana.com"
+];
+
+const connectBtn = document.getElementById("connectBtn");
+const disconnectBtn = document.getElementById("disconnectBtn");
+const refreshBtn = document.getElementById("refreshBtn");
+const walletAddress = document.getElementById("walletAddress");
+const balanceEl = document.getElementById("balance");
+const solPriceEl = document.getElementById("solPrice");
+const statusEl = document.getElementById("status");
+const destInput = document.getElementById("destInput");
+const amountInput = document.getElementById("amountInput");
+const txHistory = document.getElementById("txHistory");
+const copyBtn = document.getElementById("copyBtn");
+const qrcodeBtn = document.getElementById("qrcodeBtn");
+const qrcodeDiv = document.getElementById("qrcode");
+const tokensBox = document.getElementById("tokensBox");
+
+// ------------------------
+// Helper functions
+// ------------------------
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+async function updateConnection() {
+  for (let i = 0; i < RPC_ENDPOINTS.length; i++) {
+    try {
+      connection = new Connection(RPC_ENDPOINTS[currentRpcIndex], "confirmed");
+      console.log(`Connected to RPC: ${RPC_ENDPOINTS[currentRpcIndex]}`);
+      statusEl.textContent = `🔗 Connected to RPC: ${RPC_ENDPOINTS[currentRpcIndex]}`;
+      return true;
+    } catch (err) {
+      console.error(`Failed to connect to RPC ${RPC_ENDPOINTS[currentRpcIndex]}:`, err);
+      currentRpcIndex = (currentRpcIndex + 1) % RPC_ENDPOINTS.length;
+    }
+  }
+  statusEl.textContent = "❌ Failed to connect to all RPCs. Configure your own RPC at QuickNode or Ankr.";
+  return false;
+}
+
+// Detect Phantom wallet
+const getProvider = () => {
+  if ("solana" in window) {
+    const provider = window.solana;
+    if (provider.isPhantom) return provider;
+  }
+  alert("Phantom not found! Install the extension at https://phantom.app.");
+  return null;
+}
+
+// ------------------------
+// Price & Balance functions
+// ------------------------
+async function fetchSolPrice() {
+  try {
+    const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd");
+    const data = await res.json();
+    solPriceUSD = data.solana.usd || 0;
+    solPriceEl.textContent = `SOL Price: $${solPriceUSD.toFixed(2)} USD`;
+  } catch (err) {
+    console.error("Error fetching SOL price:", err);
+    solPriceEl.textContent = "SOL Price: unavailable";
+  }
+}
+
+async function updateBalance(attempts = 3, delay = 2000) {
+  if (!pubKey || !connection) {
+    balanceEl.textContent = "Wallet or connection not available.";
+    return;
+  }
+  for (let i = 0; i < attempts; i++) {
+    try {
+      const lamports = await connection.getBalance(pubKey);
+      balanceEl.textContent = `${(lamports / LAMPORTS_PER_SOL).toFixed(4)} SOL (Mainnet Beta)`;
+      return;
+    } catch (err) {
+      console.error(`Attempt ${i + 1} - Error fetching balance:`, err);
+      if (i < attempts - 1) {
+        currentRpcIndex = (currentRpcIndex + 1) % RPC_ENDPOINTS.length;
+        await updateConnection();
+        await sleep(delay * (i + 1));
+        continue;
+      }
+      balanceEl.textContent = `Error fetching balance: ${err.message}. Configure your own RPC at QuickNode.`;
+      return;
+    }
+  }
+}
+
+// ------------------------
+// Transaction History
+// ------------------------
+async function loadTransactionHistory(attempts = 3, delay = 2000) {
+  if (!pubKey || !connection) {
+    txHistory.innerHTML = "<li>Wallet or connection not available.</li>";
+    return;
+  }
+  for (let i = 0; i < attempts; i++) {
+    try {
+      const signatures = await connection.getSignaturesForAddress(pubKey, { limit: 10 });
+      txHistory.innerHTML = "";
+      if (signatures.length === 0) {
+        txHistory.innerHTML = "<li>No recent transactions.</li>";
+        return;
+      }
+      for (const sigInfo of signatures) {
+        const li = document.createElement("li");
+        li.innerHTML = `<a href="https://explorer.solana.com/tx/${sigInfo.signature}?cluster=mainnet-beta" target="_blank">${sigInfo.signature.slice(0,8)}...</a>`;
+        txHistory.appendChild(li);
+      }
+      return;
+    } catch (err) {
+      console.error(`Attempt ${i + 1} - Error loading history:`, err);
+      if (i < attempts - 1) {
+        currentRpcIndex = (currentRpcIndex + 1) % RPC_ENDPOINTS.length;
+        await updateConnection();
+        await sleep(delay * (i + 1));
+        continue;
+      }
+      txHistory.innerHTML = `<li>History unavailable: ${err.message}. Configure your own RPC at QuickNode.</li>`;
+      return;
+    }
+  }
+}
+
+// ------------------------
+// Tokens List
+// ------------------------
+async function loadTokens() {
+  if (!pubKey || !connection) return;
+  tokensBox.innerHTML = "Loading tokens...";
+  try {
+    // Fetch token accounts
+    const tokenAccounts = await connection.getParsedTokenAccountsByOwner(pubKey, { programId: TOKEN_PROGRAM_ID });
+
+    // Load Solana token list JSON
+    const tokenListRes = await fetch("https://raw.githubusercontent.com/solana-labs/token-list/main/src/tokens/solana.tokenlist.json");
+    const tokenListJSON = await tokenListRes.json();
+    const tokenList = tokenListJSON.tokens.reduce((acc, t) => { acc[t.address] = t; return acc; }, {});
+
+    let displayed = 0;
+    tokensBox.innerHTML = "";
+    for (const { pubkey, account } of tokenAccounts.value) {
+      const amount = account.data.parsed.info.tokenAmount.uiAmount;
+      const decimals = account.data.parsed.info.tokenAmount.decimals;
+      if (!amount || amount === 0) continue;
+
+      const mintAddress = account.data.parsed.info.mint;
+      const tokenInfo = tokenList[mintAddress];
+
+      const itemDiv = document.createElement("div");
+      itemDiv.className = "tokenItem";
+
+      const img = document.createElement("img");
+      img.src = tokenInfo?.logoURI || "https://via.placeholder.com/24";
+      const infoDiv = document.createElement("div");
+      infoDiv.className = "tokenInfo";
+      infoDiv.innerHTML = `<strong>${tokenInfo?.symbol || mintAddress}</strong> (${tokenInfo?.name || "Unknown"})<br>
+      Amount: ${amount.toFixed(4)}<br>
+      Value in SOL: ${tokenInfo?.price ? (amount * tokenInfo.price).toFixed(4) : "-"}<br>
+      Value in USD: ${tokenInfo?.price ? ((amount * tokenInfo.price) * solPriceUSD).toFixed(2) : "-"}`;
+
+      itemDiv.appendChild(img);
+      itemDiv.appendChild(infoDiv);
+      tokensBox.appendChild(itemDiv);
+      displayed++;
+    }
+    if (displayed === 0) tokensBox.innerHTML = "No tokens with balance > 0";
+  } catch (err) {
+    console.error("Error loading tokens:", err);
+    tokensBox.innerHTML = `Error loading tokens: ${err.message}`;
+  }
+}
+
+// ------------------------
+// Wallet Actions
+// ------------------------
+connectBtn.addEventListener("click", async () => {
+  provider = getProvider();
+  if (!provider) return;
+
+  try {
+    const resp = await provider.connect();
+    pubKey = new PublicKey(resp.publicKey.toString());
+    walletAddress.textContent = `Wallet: ${pubKey.toBase58()}`;
+
+    disconnectBtn.disabled = false;
+    sendBtn.disabled = false;
+    refreshBtn.disabled = false;
+    copyBtn.disabled = false;
+    qrcodeBtn.disabled = false;
+
+    await fetchSolPrice();
+    if (!await updateConnection()) return;
+    await updateBalance();
+    await loadTransactionHistory();
+    await loadTokens();
+
+    statusEl.textContent = "✅ Connected to Mainnet Beta!";
+  } catch (err) {
+    console.error("Error connecting:", err);
+    statusEl.textContent = `❌ Error connecting: ${err.message}`;
+  }
+});
+
+// Disconnect wallet
+disconnectBtn.addEventListener("click", async () => {
+  if (!provider) return;
+  try {
+    await provider.disconnect();
+    pubKey = null;
+    walletAddress.textContent = "Wallet: not connected";
+    balanceEl.textContent = "-";
+    solPriceEl.textContent = "SOL Price: - USD";
+    statusEl.textContent = "⚠️ Wallet disconnected";
+    txHistory.innerHTML = "";
+    tokensBox.innerHTML = "No tokens detected.";
+    sendBtn.disabled = true;
+    disconnectBtn.disabled = true;
+    refreshBtn.disabled = true;
+    copyBtn.disabled = true;
+    qrcodeBtn.disabled = true;
+    qrcodeDiv.innerHTML = "";
+  } catch (err) {
+    console.error("Error disconnecting:", err);
+    statusEl.textContent = `❌ Error disconnecting: ${err.message}`;
+  }
+});
+
+// Manual refresh
+refreshBtn.addEventListener("click", async () => {
+  statusEl.textContent = "🔄 Refreshing...";
+  await fetchSolPrice();
+  await updateBalance();
+  await loadTransactionHistory();
+  await loadTokens();
+  statusEl.textContent = pubKey ? "✅ Refresh complete!" : "⚠️ Connect the wallet first.";
+});
+
+// Copy wallet address
+copyBtn.addEventListener("click", () => {
+  if (!pubKey) return;
+  navigator.clipboard.writeText(pubKey.toBase58())
+    .then(() => statusEl.textContent = "✅ Wallet address copied to clipboard!")
+    .catch(err => statusEl.textContent = `❌ Copy failed: ${err.message}`);
+});
+
+// Generate QR code
+qrcodeBtn.addEventListener("click", () => {
+  if (!pubKey) return;
+  qrcodeDiv.innerHTML = "";
+  QRCode.toCanvas(pubKey.toBase58(), { width: 150 }, (err, canvas) => {
+    if (err) {
+      console.error(err);
+      statusEl.textContent = `❌ QR code generation failed: ${err.message}`;
+      return;
+    }
+    qrcodeDiv.appendChild(canvas);
+    statusEl.textContent = "🔳 QR code generated!";
+  });
+});
+
+// Detect Phantom direct disconnect
+window.addEventListener("load", () => {
+  provider = getProvider();
+  if (provider) {
+    provider.on("disconnect", () => {
+      pubKey = null;
+      walletAddress.textContent = "Wallet: not connected";
+      balanceEl.textContent = "-";
+      solPriceEl.textContent = "SOL Price: - USD";
+      statusEl.textContent = "⚠️ Wallet disconnected";
+      txHistory.innerHTML = "";
+      tokensBox.innerHTML = "No tokens detected.";
+      sendBtn.disabled = true;
+      disconnectBtn.disabled = true;
+      refreshBtn.disabled = true;
+      copyBtn.disabled = true;
+      qrcodeBtn.disabled = true;
+      qrcodeDiv.innerHTML = "";
+    });
+    if (provider.isConnected) {
+      provider.connect().catch(() => {});
+    }
+  }
+});
+
+// Send SOL
+sendBtn.addEventListener("click", async () => {
+  if (!provider || !pubKey || !connection) {
+    alert("Connect the wallet and check RPC connection!");
+    return;
+  }
+  const destValue = destInput.value.trim();
+  const amountValue = parseFloat(amountInput.value);
+
+  if (!destValue || !amountValue || amountValue <= 0) {
+    alert("Invalid address or amount.");
+    return;
+  }
+
+  try {
+    const toPubkey = new PublicKey(destValue);
+    const lamports = Math.floor(amountValue * LAMPORTS_PER_SOL);
+
+    const transaction = new Transaction().add(
+      SystemProgram.transfer({
+        fromPubkey: pubKey,
+        toPubkey: toPubkey,
+        lamports: lamports
+      })
+    );
+
+    const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
+    transaction.recentBlockhash = blockhash;
+    transaction.feePayer = pubKey;
+
+    const { signature } = await provider.signAndSendTransaction(transaction);
+    await connection.confirmTransaction({ signature, blockhash, lastValidBlockHeight });
+
+    statusEl.innerHTML = `✅ Sent! Tx: <a href="https://explorer.solana.com/tx/${signature}?cluster=mainnet-beta" target="_blank">${signature.slice(0, 8)}...</a>`;
+
+    await updateBalance();
+    await loadTransactionHistory();
+    await loadTokens();
+  } catch (err) {
+    console.error("Error sending:", err);
+    statusEl.textContent = `❌ Error sending: ${err.message}`;
+  }
+});
+</script>
+</body>
+</html>
