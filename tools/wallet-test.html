@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Solana Wallet Portfolio</title>
-<meta name="description" content="Solana Wallet Portfolio Dashboard" />
+<title>Solana Wallet Tools</title>
+<meta name="description" content="Solana Wallet Tools" />
 <meta name="author" content="Dev Twenty Seven" />
 <link rel="icon" href="/assets/icons/27-mini-icon.png" type="image/png">
 
@@ -16,16 +16,20 @@ button:disabled { background:#444; cursor:not-allowed;}
 a { color:#4fc3f7; text-decoration:none;}
 #status { word-wrap: break-word; }
 #qrcode { margin-top:10px; }
-#tokensBox { margin-top:20px; background:#222; padding:10px; border-radius:10px; max-height:400px; overflow-y:auto;}
-.tokenItem { display:flex; align-items:center; margin-bottom:8px; gap:10px; }
-.tokenItem img { width:24px; height:24px; border-radius:12px; }
-.tokenInfo { display:flex; flex-direction:column; }
+
+/* Tokens table styles */
+#tokensBox { margin-top:20px; background:#222; padding:10px; border-radius:10px; max-height:420px; overflow:auto; }
+.tokensTable { width:100%; border-collapse:collapse; }
+.tokensTable th, .tokensTable td { padding:8px 6px; text-align:left; border-bottom:1px solid rgba(255,255,255,0.04); font-size:13px; vertical-align:middle;}
+.tokensTable th { color:#bfc7d6; font-weight:600; font-size:12px; }
+.tokenLogo { width:28px; height:28px; border-radius:6px; object-fit:cover; display:block; }
+.col-right { text-align:right; } /* for value columns */
 </style>
 </head>
 
 <body>
 
-<h1>Solana Wallet Portfolio</h1>
+<h1>Solana Mainnet Dashboard</h1>
 
 <!-- Wallet Control Buttons -->
 <button id="connectBtn">🔗 Connect Wallet</button>
@@ -39,7 +43,7 @@ a { color:#4fc3f7; text-decoration:none;}
 <button id="qrcodeBtn" disabled>🔳 Generate QR Code</button>
 <div id="qrcode"></div>
 
-<!-- SOL Price Display -->
+<!-- SOL Price Display (above balance) -->
 <h3 id="solPrice">SOL Price: - USD</h3>
 
 <h3>Balance:</h3>
@@ -66,12 +70,21 @@ a { color:#4fc3f7; text-decoration:none;}
 <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 
 <script type="module">
+/*
+  Solana Wallet Tools - wallet-test.html
+  - Adds token table using on-chain parsed token accounts
+  - Enriches token info via DexScreener (logo, symbol, name, price)
+  - Shows Value in SOL and USD (N/A when not available)
+  - SOL price from CoinGecko (used to compute value in SOL when only USD price exists)
+  - All UI text and comments in English
+*/
+
 import {
   Connection,
   PublicKey,
   SystemProgram,
   Transaction,
-  LAMPORTS_PER_SOL,
+  LAMPORTS_PER_SOL
 } from "https://esm.sh/@solana/web3.js@1.95.3";
 import { TOKEN_PROGRAM_ID } from "https://esm.sh/@solana/spl-token@0.2.0";
 
@@ -103,12 +116,16 @@ const copyBtn = document.getElementById("copyBtn");
 const qrcodeBtn = document.getElementById("qrcodeBtn");
 const qrcodeDiv = document.getElementById("qrcode");
 const tokensBox = document.getElementById("tokensBox");
+const sendBtn = document.getElementById("sendBtn");
 
 // ------------------------
 // Helper functions
 // ------------------------
+
+// Sleep for backoff between API calls (used to avoid rate limits)
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
+// Connect to RPC with fallback
 async function updateConnection() {
   for (let i = 0; i < RPC_ENDPOINTS.length; i++) {
     try {
@@ -133,23 +150,26 @@ const getProvider = () => {
   }
   alert("Phantom not found! Install the extension at https://phantom.app.");
   return null;
-}
+};
 
 // ------------------------
 // Price & Balance functions
 // ------------------------
+
+// Fetch SOL price (USD) from CoinGecko
 async function fetchSolPrice() {
   try {
     const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd");
     const data = await res.json();
-    solPriceUSD = data.solana.usd || 0;
-    solPriceEl.textContent = `SOL Price: $${solPriceUSD.toFixed(2)} USD`;
+    solPriceUSD = (data && data.solana && data.solana.usd) ? data.solana.usd : 0;
+    solPriceEl.textContent = solPriceUSD ? `SOL Price: $${solPriceUSD.toFixed(2)} USD` : "SOL Price: unavailable";
   } catch (err) {
     console.error("Error fetching SOL price:", err);
     solPriceEl.textContent = "SOL Price: unavailable";
   }
 }
 
+// Update wallet balance with retry/fallback
 async function updateBalance(attempts = 3, delay = 2000) {
   if (!pubKey || !connection) {
     balanceEl.textContent = "Wallet or connection not available.";
@@ -211,48 +231,150 @@ async function loadTransactionHistory(attempts = 3, delay = 2000) {
 }
 
 // ------------------------
-// Tokens List
+// Tokens List using DexScreener (fallback to N/A)
+// - Only tokens with amount > 0 will be shown
+// - Attempts to retrieve logo, symbol, name and price via DexScreener
+// - If price available: compute Value (USD) and Value (SOL). Otherwise show "N/A"
 // ------------------------
 async function loadTokens() {
   if (!pubKey || !connection) return;
   tokensBox.innerHTML = "Loading tokens...";
+
   try {
-    // Fetch token accounts
+    // Get parsed token accounts owned by wallet
     const tokenAccounts = await connection.getParsedTokenAccountsByOwner(pubKey, { programId: TOKEN_PROGRAM_ID });
 
-    // Load Solana token list JSON
-    const tokenListRes = await fetch("https://raw.githubusercontent.com/solana-labs/token-list/main/src/tokens/solana.tokenlist.json");
-    const tokenListJSON = await tokenListRes.json();
-    const tokenList = tokenListJSON.tokens.reduce((acc, t) => { acc[t.address] = t; return acc; }, {});
+    // Prepare table
+    const table = document.createElement("table");
+    table.className = "tokensTable";
+    const header = document.createElement("thead");
+    header.innerHTML = `
+      <tr>
+        <th>Logo</th>
+        <th>Symbol</th>
+        <th>Name</th>
+        <th>Amount</th>
+        <th class="col-right">Value (SOL)</th>
+        <th class="col-right">Value (USD)</th>
+      </tr>`;
+    table.appendChild(header);
+    const tbody = document.createElement("tbody");
 
     let displayed = 0;
-    tokensBox.innerHTML = "";
-    for (const { pubkey, account } of tokenAccounts.value) {
-      const amount = account.data.parsed.info.tokenAmount.uiAmount;
-      const decimals = account.data.parsed.info.tokenAmount.decimals;
-      if (!amount || amount === 0) continue;
+
+    // iterate token accounts and show only those with positive balance
+    for (const { account } of tokenAccounts.value) {
+      const uiAmount = account.data.parsed.info.tokenAmount.uiAmount;
+      if (!uiAmount || uiAmount === 0) continue; // skip zero balances
 
       const mintAddress = account.data.parsed.info.mint;
-      const tokenInfo = tokenList[mintAddress];
+      const amount = uiAmount;
 
-      const itemDiv = document.createElement("div");
-      itemDiv.className = "tokenItem";
+      // default placeholders
+      let logoURI = "https://via.placeholder.com/24";
+      let symbol = mintAddress.slice(0,6);
+      let name = "Unknown Token";
+      let priceUsd = null;      // price in USD per token
+      let priceNative = null;   // price in native unit (e.g., SOL) per token (if provided)
 
+      // Try fetch from DexScreener. Rate-limit-friendly: small delay between requests.
+      try {
+        // DexScreener token endpoint (may return many pairs). We try to parse the first valid pair.
+        const dexRes = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${mintAddress}`);
+        if (dexRes.ok) {
+          const dexData = await dexRes.json();
+          // dexData.pairs is an array of markets. choose first pair that has baseToken info.
+          const pair = (dexData && Array.isArray(dexData.pairs) && dexData.pairs.length > 0) ? dexData.pairs[0] : null;
+          if (pair) {
+            // pair.baseToken usually holds token metadata on DexScreener responses
+            const base = pair.baseToken || {};
+            symbol = base.symbol || symbol;
+            name = base.name || name;
+            if (base.logoURI) logoURI = base.logoURI;
+
+            // DexScreener pair may include priceUsd or priceNative fields
+            // Try to read priceUsd or price or priceNative. Parse to float if present.
+            if (pair.priceUsd) priceUsd = parseFloat(pair.priceUsd);
+            if (!priceUsd && pair.price) priceUsd = parseFloat(pair.price); // fallback
+            if (pair.priceNative) priceNative = parseFloat(pair.priceNative);
+            // Note: priceNative may represent price in native chain token (SOL) depending on pair.
+          }
+        } else {
+          // non-OK response: ignore and fallback to N/A
+          console.warn(`DexScreener returned ${dexRes.status} for ${mintAddress}`);
+        }
+      } catch (err) {
+        console.warn(`DexScreener lookup failed for ${mintAddress}:`, err);
+      }
+
+      // Compute values
+      let valueUSD = null;
+      let valueSOL = null;
+
+      if (priceUsd && !isNaN(priceUsd)) {
+        valueUSD = amount * priceUsd;
+        if (solPriceUSD && solPriceUSD > 0) {
+          valueSOL = valueUSD / solPriceUSD;
+        } else if (priceNative && !isNaN(priceNative)) {
+          // if dex provided native price (likely in SOL), prefer that
+          valueSOL = amount * priceNative;
+        }
+      } else if (priceNative && !isNaN(priceNative)) {
+        // priceNative present but priceUsd not: priceNative likely quoted in SOL
+        valueSOL = amount * priceNative;
+        if (solPriceUSD && solPriceUSD > 0) {
+          valueUSD = valueSOL * solPriceUSD;
+        }
+      }
+
+      const tr = document.createElement("tr");
+      const tdLogo = document.createElement("td");
       const img = document.createElement("img");
-      img.src = tokenInfo?.logoURI || "https://via.placeholder.com/24";
-      const infoDiv = document.createElement("div");
-      infoDiv.className = "tokenInfo";
-      infoDiv.innerHTML = `<strong>${tokenInfo?.symbol || mintAddress}</strong> (${tokenInfo?.name || "Unknown"})<br>
-      Amount: ${amount.toFixed(4)}<br>
-      Value in SOL: ${tokenInfo?.price ? (amount * tokenInfo.price).toFixed(4) : "-"}<br>
-      Value in USD: ${tokenInfo?.price ? ((amount * tokenInfo.price) * solPriceUSD).toFixed(2) : "-"}`;
+      img.src = logoURI;
+      img.className = "tokenLogo";
+      img.alt = symbol;
+      tdLogo.appendChild(img);
 
-      itemDiv.appendChild(img);
-      itemDiv.appendChild(infoDiv);
-      tokensBox.appendChild(itemDiv);
+      const tdSymbol = document.createElement("td");
+      tdSymbol.textContent = symbol;
+
+      const tdName = document.createElement("td");
+      tdName.textContent = name;
+
+      const tdAmount = document.createElement("td");
+      tdAmount.textContent = Number(amount).toLocaleString(undefined, {maximumFractionDigits: 6});
+
+      const tdValueSOL = document.createElement("td");
+      tdValueSOL.className = "col-right";
+      tdValueSOL.textContent = valueSOL != null ? Number(valueSOL).toLocaleString(undefined, {maximumFractionDigits:6}) : "N/A";
+
+      const tdValueUSD = document.createElement("td");
+      tdValueUSD.className = "col-right";
+      tdValueUSD.textContent = valueUSD != null ? `$${Number(valueUSD).toLocaleString(undefined, {maximumFractionDigits:2})}` : "N/A";
+
+      tr.appendChild(tdLogo);
+      tr.appendChild(tdSymbol);
+      tr.appendChild(tdName);
+      tr.appendChild(tdAmount);
+      tr.appendChild(tdValueSOL);
+      tr.appendChild(tdValueUSD);
+
+      tbody.appendChild(tr);
+
       displayed++;
+      // small delay to be polite to DexScreener / avoid bursts
+      await sleep(150);
     }
-    if (displayed === 0) tokensBox.innerHTML = "No tokens with balance > 0";
+
+    if (displayed === 0) {
+      tokensBox.innerHTML = "No tokens with balance > 0";
+      return;
+    }
+
+    table.appendChild(tbody);
+    tokensBox.innerHTML = "";
+    tokensBox.appendChild(table);
+
   } catch (err) {
     console.error("Error loading tokens:", err);
     tokensBox.innerHTML = `Error loading tokens: ${err.message}`;
@@ -262,6 +384,8 @@ async function loadTokens() {
 // ------------------------
 // Wallet Actions
 // ------------------------
+
+// Connect wallet
 connectBtn.addEventListener("click", async () => {
   provider = getProvider();
   if (!provider) return;
@@ -277,7 +401,9 @@ connectBtn.addEventListener("click", async () => {
     copyBtn.disabled = false;
     qrcodeBtn.disabled = false;
 
+    // Fetch SOL price first (used by token value calculations)
     await fetchSolPrice();
+
     if (!await updateConnection()) return;
     await updateBalance();
     await loadTransactionHistory();
@@ -324,7 +450,7 @@ refreshBtn.addEventListener("click", async () => {
   statusEl.textContent = pubKey ? "✅ Refresh complete!" : "⚠️ Connect the wallet first.";
 });
 
-// Copy wallet address
+// Copy wallet address to clipboard
 copyBtn.addEventListener("click", () => {
   if (!pubKey) return;
   navigator.clipboard.writeText(pubKey.toBase58())
@@ -332,7 +458,7 @@ copyBtn.addEventListener("click", () => {
     .catch(err => statusEl.textContent = `❌ Copy failed: ${err.message}`);
 });
 
-// Generate QR code
+// Generate QR code for wallet address
 qrcodeBtn.addEventListener("click", () => {
   if (!pubKey) return;
   qrcodeDiv.innerHTML = "";
@@ -367,12 +493,15 @@ window.addEventListener("load", () => {
       qrcodeDiv.innerHTML = "";
     });
     if (provider.isConnected) {
+      // attempt to re-connect silently
       provider.connect().catch(() => {});
     }
   }
 });
 
+// ------------------------
 // Send SOL
+// ------------------------
 sendBtn.addEventListener("click", async () => {
   if (!provider || !pubKey || !connection) {
     alert("Connect the wallet and check RPC connection!");
@@ -402,6 +531,7 @@ sendBtn.addEventListener("click", async () => {
     transaction.recentBlockhash = blockhash;
     transaction.feePayer = pubKey;
 
+    // Use provider.signAndSendTransaction (Phantom)
     const { signature } = await provider.signAndSendTransaction(transaction);
     await connection.confirmTransaction({ signature, blockhash, lastValidBlockHeight });
 
