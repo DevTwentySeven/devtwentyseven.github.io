@@ -179,6 +179,9 @@
   <footer>© 2025 Dev Twenty Seven. All Rights Reserved.</footer>
 </div>
 
+<!-- Import tokens list -->
+<script src="/watchlist.js"></script>
+
 <script>
   // === Matrix effect ===
   const canvas = document.getElementById("matrix");
@@ -210,15 +213,6 @@
     if(this.value==="matrix"){ canvas.style.display="block"; matrixInterval=setInterval(drawMatrix,50);}
     else{ canvas.style.display="none"; clearInterval(matrixInterval); document.body.style.backgroundColor="#0b0b0b";}
   });
-
-  // === Watchlist ticker ===
-  const tokensWatchlist=[
-    "9A2jUbgoDY97fruKHXvDd7eQiq4xvnW3By1BfH1Bwn9Y", // DEEP
-    "HTU9PssaFxVBXM8KphyVqLeixrUVuubffAHBp9vRpump", // MAHA
-    "AtPNZ3Rwcezea16xkjkxULzCMKpSbS2rVEirVfzrnEa6", // GOLD
-    "vtUzXyowSMsNUwiZMLNufySoeW9ehaPAVr7YsYQpump", // MARV
-    "FRsV3m924aGpLMuEekoo3JkkMt1oopaM4JY9ki5YLXrp"  // XVM
-  ];
 
   function formatNumber(num){
     if(num>=1e12) return(num/1e12).toFixed(2)+"T";
