@@ -1,0 +1,66 @@
+{
+  "name": "27 coin",
+  "symbol": "27",
+  "description": "27 Coin is more than a token — it’s a digital rebellion on Solana networking. Stake with 2.7% annually and join the movement crafted by Dev Twenty Seven.",
+  "decimals": 9,
+
+  "external_url": "https://devtwentyseven.github.io/solana/27coin",
+  "website": "https://devtwentyseven.github.io/solana/27coin",
+  "twitter": "https://x.com/27C0IN",
+  "tiktok": "https://tiktok.com/tag/27",
+  "pumpfun_profile": "https://pump.fun/profile/devtwentyseven",
+
+  "image": "https://devtwentyseven.github.io/solana/27coin/27.gif",
+  "banner": "https://devtwentyseven.github.io/solana/27coin/27coin.gif",
+  "animation_url": "https://devtwentyseven.github.io/solana/27coin/27.gif",
+  "background_color": "#000000",
+
+  "seller_fee_basis_points": 27,
+
+  "creators": [
+    {
+      "address": "AyFd7CtSnb6ZNdPw17s2zbjkpe9YqejD2faBFBTN6Gvi",
+      "share": 100,
+      "verified": true
+    }
+  ],
+
+  "collection": {
+    "name": "27 Coin",
+    "family": "27 Gang"
+  },
+
+  "attributes": [
+    {"trait_type": "Category", "value": "DeFi"},
+    {"trait_type": "Version", "value": "1.0"},
+    {"trait_type": "Stake Rate", "value": "2.7% annually"}
+  ],
+
+  "properties": {
+    "files": [
+      {"uri": "https://devtwentyseven.github.io/solana/27coin/27.gif", "type": "image/gif"},
+      {"uri": "https://devtwentyseven.github.io/solana/27coin/27coin.gif", "type": "image/gif"}
+    ],
+    "category": "image",
+    "creators": [
+      {
+        "address": "AyFd7CtSnb6ZNdPw17s2zbjkpe9YqejD2faBFBTN6Gvi",
+        "share": 100
+      }
+    ]
+  },
+
+  "files": [
+    {"uri": "https://devtwentyseven.github.io/solana/27coin/27.gif", "type": "image/gif"},
+    {"uri": "https://devtwentyseven.github.io/solana/27coin/27coin.gif", "type": "image/gif"}
+  ],
+
+  "explicit": false,
+  "tags": ["27", "coin", "DeFi", "utility", "meme"],
+  "version": "1.0",
+  "license": "CC0",
+  "platform": "Solana",
+  "content_type": "image/gif",
+  "minting_tool": "spl-token-cli v0.28",
+  "developer": "Dev Twenty Seven"
+}
