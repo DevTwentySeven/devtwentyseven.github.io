@@ -18,6 +18,11 @@
       "address": "AyFd7CtSnb6ZNdPw17s2zbjkpe9YqejD2faBFBTN6Gvi",
       "share": 100,
       "verified": true
+    },
+    {
+      "address": "x27xF55vJkKaFGM8Zv7ziKeDWYhkMdsUyKHGZGyjk8n",
+      "share": 0,
+      "verified": true
     }
   ],
 
@@ -44,6 +49,10 @@
       {
         "address": "AyFd7CtSnb6ZNdPw17s2zbjkpe9YqejD2faBFBTN6Gvi",
         "share": 100
+      },
+      {
+        "address": "x27xF55vJkKaFGM8Zv7ziKeDWYhkMdsUyKHGZGyjk8n",
+        "share": 0
       }
     ]
   },
