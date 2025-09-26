@@ -5,10 +5,6 @@
   "decimals": 9,
 
   "external_url": "https://devtwentyseven.github.io/solana/27coin",
-  "website": "https://devtwentyseven.github.io/solana/27coin",
-  "twitter": "https://x.com/27C0IN",
-  "tiktok": "https://tiktok.com/tag/27",
-  "pumpfun_profile": "https://pump.fun/profile/devtwentyseven",
 
   "image": "https://devtwentyseven.github.io/solana/27coin/27.gif",
   "banner": "https://devtwentyseven.github.io/solana/27coin/27coin.gif",
@@ -33,7 +29,9 @@
   "attributes": [
     {"trait_type": "Category", "value": "DeFi"},
     {"trait_type": "Version", "value": "1.0"},
-    {"trait_type": "Stake Rate", "value": "2.7% annually"}
+    {"trait_type": "Stake Rate", "value": "2.7% annually"},
+    {"trait_type": "Confidential Transfer", "value": "true"},
+    {"trait_type": "Dev", "value": "Twenty Seven"}
   ],
 
   "properties": {
@@ -50,17 +48,7 @@
     ]
   },
 
-  "files": [
-    {"uri": "https://devtwentyseven.github.io/solana/27coin/27.gif", "type": "image/gif"},
-    {"uri": "https://devtwentyseven.github.io/solana/27coin/27coin.gif", "type": "image/gif"}
-  ],
-
-  "explicit": false,
-  "tags": ["27", "coin", "DeFi", "utility", "meme"],
-  "version": "1.0",
+  "tags": ["27", "coin", "DeFi", "Confidential Transfer", "Stake"],
   "license": "CC0",
-  "platform": "Solana",
-  "content_type": "image/gif",
-  "minting_tool": "spl-token-cli v0.28",
-  "developer": "Dev Twenty Seven"
+  "platform": "Solana"
 }
