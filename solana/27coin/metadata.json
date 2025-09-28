@@ -1,9 +1,13 @@
 {
-  "name": "27 Coin",
+  "name": "27 coin",
   "symbol": "27",
-  "description": "27 Coin is more than a token — it’s a digital rebellion on Solana networking. Stake with 2.7% annually and join the movement crafted by Dev Twenty Seven.",
+  "description": "27 coin is more than a token — it’s a digital rebellion on Solana networking. Stake with 2.7% annually and join the movement crafted by Dev Twenty Seven.",
 
   "external_url": "https://devtwentyseven.github.io/solana/27coin",
+  "website": "https://devtwentyseven.github.io/solana/27coin",
+  "twitter": "https://x.com/27C0IN",
+  "tiktok": "https://tiktok.com/tag/27",
+  "pumpfun_profile": "https://pump.fun/profile/devtwentyseven",
 
   "image": "https://devtwentyseven.github.io/solana/27coin/27.gif",
   "animation_url": "https://devtwentyseven.github.io/solana/27coin/27.gif",
@@ -14,7 +18,7 @@
 
   "collection": {
     "name": "27 Coin",
-    "family": "27 Gang"
+    "family": "twenty seven"
   },
 
   "attributes": [
@@ -35,6 +39,10 @@
       {
         "address": "AyFd7CtSnb6ZNdPw17s2zbjkpe9YqejD2faBFBTN6Gvi",
         "share": 100
+      },
+      {
+        "address": "x27xF55vJkKaFGM8Zv7ziKeDWYhkMdsUyKHGZGyjk8n",
+        "share": 0
       }
     ]
   },
