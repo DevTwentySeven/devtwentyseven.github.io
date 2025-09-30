@@ -24,7 +24,7 @@
   "attributes": [
     {"trait_type": "Category", "value": "DeFi"},
     {"trait_type": "Version", "value": "1.0"},
-    {"trait_type": "Stake Rate", "value": "2.7% annually"},
+    {"trait_type": "Interest Bearing", "value": "2.7% annually"},
     {"trait_type": "Confidential Transfer", "value": "true"},
     {"trait_type": "Dev", "value": "Twenty Seven"}
   ],
@@ -47,7 +47,7 @@
     ]
   },
 
-  "tags": ["27", "coin", "DeFi", "Confidential Transfer", "Stake"],
+  "tags": ["27", "coin", "DeFi", "Confidential Transfer", "Interest Bearing"],
   "license": "CC0",
   "platform": "Solana"
 }
