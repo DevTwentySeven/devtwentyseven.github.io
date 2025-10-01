@@ -6,9 +6,11 @@ const tokensWatchlist = [
   "9A2jUbgoDY97fruKHXvDd7eQiq4xvnW3By1BfH1Bwn9Y", // DEEP
   "5UUH9RTDiSpq6HKS6bp4NdU9PNJpXRXuiw6ShBTBhgH2", // TROLL
   "9AvytnUKsLxPxFHFqS6VLxaxt5p6BhYNr53SD2Chpump", // 67
+  "5Qw7bkvj13Atg1ftzUKrQu9p7YrDiQmJTrhwchM1pump", // SREAMGUY
   "AtPNZ3Rwcezea16xkjkxULzCMKpSbS2rVEirVfzrnEa6", // GOLD
   "DKffyw1oEVWR3ik7q7tb2shhmZ3jbTkRzT6R5banCxai", // AI20X
   "7Pnqg1S6MYrL6AP1ZXcToTHfdBbTB77ze6Y33qBBpump", // BagWork
+  "5DYeeW5mvDPbNBt2qPM1dqUT1YDrBZsEaFxzMq28pump", // WLM
   "vtUzXyowSMsNUwiZMLNufySoeW9ehaPAVr7YsYQpump", // MARV
   "FRsV3m924aGpLMuEekoo3JkkMt1oopaM4JY9ki5YLXrp",  // XVM
   "DGbRsRZuXZgwXPxy6ZPwunQYZwa7b3gfC9AnBcgepump", // MAHA
