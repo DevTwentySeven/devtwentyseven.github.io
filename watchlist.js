@@ -13,7 +13,7 @@ const tokensWatchlist = [
   "5DYeeW5mvDPbNBt2qPM1dqUT1YDrBZsEaFxzMq28pump", // WLM
   "vtUzXyowSMsNUwiZMLNufySoeW9ehaPAVr7YsYQpump", // MARV
   "FRsV3m924aGpLMuEekoo3JkkMt1oopaM4JY9ki5YLXrp",  // XVM
-  "DGbRsRZuXZgwXPxy6ZPwunQYZwa7b3gfC9AnBcgepump", // MAHA
+  "J3oWJafxg8xmH5vvwBAVX99rmr8b7C9BxjmjaMgCpump", // MAHA
   "Bb43TPQQh5TaoCtFLGjfwAhqcLumN6mTUmCy2ojjpump" // RETRO
   //
 ];
