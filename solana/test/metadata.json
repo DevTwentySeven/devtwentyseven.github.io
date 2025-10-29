@@ -1,1 +1,53 @@
+{
+  "name": "Test coin",
+  "symbol": "test",
+  "description": "Description test coin",
 
+  "external_url": "https://devtwentyseven.github.io/solana/test",
+  "website": "https://devtwentyseven.github.io/solana/test",
+  "twitter": "https://x.com/devtwentyseven",
+  "tiktok": "https://tiktok.com/tag/",
+  "pumpfun_profile": "https://pump.fun/profile/devtwentyseven",
+
+  "image": "https://devtwentyseven.github.io/solana/test/icon.gif",
+  "animation_url": "https://devtwentyseven.github.io/solana/test/icon.gif",
+  "banner": "https://devtwentyseven.github.io/solana/test/banner.gif",
+  "background_color": "#000000",
+
+  "seller_fee_basis_points": 27,
+
+  "collection": {
+    "name": "Test Coin",
+    "family": "Twenty Seven"
+  },
+
+  "attributes": [
+    {"trait_type": "Category", "value": "Test"},
+    {"trait_type": "Version", "value": "2022"},
+    {"trait_type": "Interest Bearing", "value": "2.7% annually"},
+    {"trait_type": "Confidential Transfer", "value": "true"},
+    {"trait_type": "Dev", "value": "Twenty Seven"}
+  ],
+
+  "properties": {
+    "files": [
+      {"uri": "https://devtwentyseven.github.io/solana/test/icon.gif", "type": "image/gif"},
+      {"uri": "https://devtwentyseven.github.io/solana/test/banner.gif", "type": "image/gif"}
+    ],
+    "category": "image",
+    "creators": [
+      {
+        "address": "x27xF55vJkKaFGM8Zv7ziKeDWYhkMdsUyKHGZGyjk8n",
+        "share": 0
+      },
+      {
+        "address": "AyFd7CtSnb6ZNdPw17s2zbjkpe9YqejD2faBFBTN6Gvi",
+        "share": 100
+      }
+    ]
+  },
+
+  "tags": ["test", "coin", "DeFi", "Confidential Transfer", "Interest Bearing"],
+  "license": "CC0",
+  "platform": "Solana"
+}
