@@ -1,6 +1,6 @@
 {
-  "name": "Test coin",
-  "symbol": "test",
+  "name": "Test Coin",
+  "symbol": "TEST",
   "description": "Description test coin",
 
   "external_url": "https://devtwentyseven.github.io/solana/test",
