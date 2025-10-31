@@ -1,0 +1,15 @@
+{
+  "name":"Namekusei Dragon Ball",
+  "symbol":"DBC",
+  "description":"Supercharging the next generation of RWA on XRP",
+  "image":"https://devtwentyseven.github.io/solana/namekusei_dragon_ball/icon.gif",
+  "banner":"https://devtwentyseven.github.io/solana/namekusei_dragon_ball/banner.gif",
+  "extensions":
+  {
+    "website":"devtwentyseven.github.io",
+    "telegram":"https://t.me/twentysevenlabs",
+    "twitter":"https://x.com/devtwentyseven",
+    "github":"https://github.com/DevTwentySeven"
+  },
+  "tags":["meme","dragon","ball"]
+}
