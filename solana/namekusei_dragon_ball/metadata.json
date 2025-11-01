@@ -2,17 +2,17 @@
   "name": "Namekusei Dragon Ball",
   "symbol": "NDB",
   "description": "Dragon Ball token made by Dev Twenty Seven",
-  "image": "<http://devtwentyseven.github.io/solana/namekusei_dragon_ball/icon.gif>",
-  "animation_url": "<http://devtwentyseven.github.io/solana/namekusei_dragon_ball/icon.gif>",
-  "banner":"<https://devtwentyseven.github.io/solana/namekusei_dragon_ball/banner.png>",
-  "external_url": "<devtwentyseven.github.io/solana/namekusei_dragon_ball>",
+  "image": "http://devtwentyseven.github.io/solana/namekusei_dragon_ball/icon.gif",
+  "animation_url": "http://devtwentyseven.github.io/solana/namekusei_dragon_ball/icon.gif",
+  "banner":"https://devtwentyseven.github.io/solana/namekusei_dragon_ball/banner.png",
+  "external_url": "devtwentyseven.github.io/solana/namekusei_dragon_ball",
   "extensions":
     {
-      "website":"<devtwentyseven.github.io>",
-      "telegram":"<https://t.me/twentysevenlabs>",
-      "twitter":"<https://x.com/devtwentyseven>",
-      "github":"<https://github.com/DevTwentySeven>",
-      "whitepaper": "<devtwentyseven.github.io/solana/namekusei_dragon_ball/whitepaper>"
+      "website":"devtwentyseven.github.io",
+      "telegram":"https://t.me/twentysevenlabs",
+      "twitter":"https://x.com/devtwentyseven",
+      "github":"https://github.com/DevTwentySeven",
+      "whitepaper": "devtwentyseven.github.io/solana/namekusei_dragon_ball/whitepaper"
     },
   "attributes": [
     {
