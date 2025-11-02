@@ -1,0 +1,24 @@
+{
+  "name": "Continental Gold Coin",
+  "symbol": "CGC",
+  "description": "Jhon Wick Continental Gold Coin",
+  "image": "http://devtwentyseven.github.io/solana/continental_gold_coin/icon.gif",
+  "animation_url": "http://devtwentyseven.github.io/solana/continental_gold_coin/icon.gif",
+  "banner":"https://devtwentyseven.github.io/solana/continental_gold_coin/banner.png",
+  "external_url": "devtwentyseven.github.io/solana/continental_gold_coin",
+  "extensions":
+    {
+      "website":"devtwentyseven.github.io",
+      "telegram":"https://t.me/twentysevenlabs",
+      "twitter":"https://x.com/devtwentyseven",
+      "github":"https://github.com/DevTwentySeven",
+      "whitepaper": "devtwentyseven.github.io/solana/continental_gold_coin/whitepaper"
+    },
+  "attributes": [
+    {
+      "trait_type": "Dev",
+      "value": "Twenty Seven"
+    }
+  ],
+  "tags":["meme","Jhon Wick","Continental"]
+}
