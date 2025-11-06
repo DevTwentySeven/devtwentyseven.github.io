@@ -3,31 +3,24 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>In Development</title>
+  <title>Mc Coin | Official Page</title>
+  <link rel="icon" type="image/png" href="logo.png">
 
-  <!-- Google Font (you can change or remove this) -->
+  <!-- Google Font -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
 
   <style>
-    /* ========================================
-       EASY CUSTOMIZATION SECTION
-       ======================================== */
     :root{
-      /* main colors */
-      --text-color: #ffffff;               /* text color */
-      --bg-overlay: rgba(1, 0, 0, 0.4);    /* dark overlay on top of background image */
+      --text-color: #ffffff;
+      --bg-overlay: rgba(1, 0, 0, 0.4);
       --transition: 250ms;
-
-      /* background image (replace URL with yours) */
       --bg-image: url('banner.gif');
-
-      /* font size and layout adjustments */
       --title-font-size: clamp(2rem, 5vw, 4rem);
+      --accent-color: #ffcc00;
+      --button-bg: #ff0000;
+      --button-hover: #ffb300;
     }
 
-    /* ========================================
-       RESET & BASE STYLES
-       ======================================== */
     *{box-sizing: border-box; margin: 0; padding: 0;}
     html, body{
       height:100%;
@@ -35,9 +28,6 @@
       color: var(--text-color);
     }
 
-    /* ========================================
-       FULLSCREEN BACKGROUND
-       ======================================== */
     body{
       background-image: var(--bg-image);
       background-size: cover;
@@ -45,12 +35,13 @@
       background-repeat: no-repeat;
       position: relative;
       display: flex;
+      flex-direction: column;
       justify-content: center;
-      align-items: flex-start; /* place title closer to the top */
-      padding-top: 20vh; /* adjust vertical distance from top */
+      align-items: center;
+      text-align: center;
+      padding: 20px;
     }
 
-    /* semi-transparent overlay for better contrast */
     body::before{
       content:"";
       position: absolute;
@@ -59,44 +50,77 @@
       z-index: 0;
     }
 
-    /* ========================================
-       MAIN TITLE
-       ======================================== */
-    h1{
-      position: relative; /* keep above overlay */
+    h1, h2 {
+      position: relative;
       z-index: 1;
-      font-size: var(--title-font-size);
-      font-weight: 700;
-      letter-spacing: 1px;
       text-transform: uppercase;
-      text-align: center;
       text-shadow: 0 4px 20px rgba(0,0,0,0.6);
       transition: opacity var(--transition) ease;
     }
 
-    h1:hover{
+    h1 {
+      font-size: var(--title-font-size);
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 30px;
+    }
+
+    h2 {
+      font-size: clamp(1.2rem, 3vw, 2rem);
+      font-weight: 600;
+      letter-spacing: 1px;
+      margin-bottom: 20px;
+      color: var(--accent-color);
+    }
+
+    h1:hover, h2:hover {
       opacity: 0.9;
     }
 
-    /* ========================================
-       RESPONSIVE ADJUSTMENTS
-       ======================================== */
+    .logo {
+      position: relative;
+      z-index: 1;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      margin-bottom: 20px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.4);
+    }
+
+    .button {
+      position: relative;
+      z-index: 1;
+      display: inline-block;
+      background: var(--button-bg);
+      color: #000;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 12px 30px;
+      border-radius: 10px;
+      font-size: 1rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      transition: all 0.2s ease-in-out;
+    }
+
+    .button:hover {
+      background: var(--button-hover);
+      transform: scale(1.05);
+    }
+
     @media (max-width:600px){
-      body{ padding-top: 25vh; }
       h1{ font-size: clamp(1.8rem, 6vw, 3rem); }
+      h2{ font-size: clamp(1rem, 4vw, 1.5rem); }
+      .logo{ width: 90px; height: 90px; }
     }
   </style>
 </head>
 <body>
-  <!-- ==========================
-       PAGE CONTENT STARTS HERE
-       ========================== -->
 
-  <!-- Title text (you can change this) -->
-  <h1>In Development</h1>
+  <h2>In Development</h2>
+  <img src="logo.png" alt="Mc Coin Logo" class="logo">
+  <h1>Mc Coin<br>Hat’s On!</h1>
 
-  <!-- ==========================
-       PAGE CONTENT ENDS HERE
-       ========================== -->
+  <a href="https://devtwentyseven.github.io/solana/mccoin/whitepaper" class="button">📄 View Whitepaper</a>
+
 </body>
 </html>
