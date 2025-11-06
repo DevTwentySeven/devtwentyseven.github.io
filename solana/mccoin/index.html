@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>In Development</title>
+
+  <!-- Google Font (you can change or remove this) -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ========================================
+       EASY CUSTOMIZATION SECTION
+       ======================================== */
+    :root{
+      /* main colors */
+      --text-color: #ffffff;               /* text color */
+      --bg-overlay: rgba(1, 0, 0, 0.4);    /* dark overlay on top of background image */
+      --transition: 250ms;
+
+      /* background image (replace URL with yours) */
+      --bg-image: url('banner.gif');
+
+      /* font size and layout adjustments */
+      --title-font-size: clamp(2rem, 5vw, 4rem);
+    }
+
+    /* ========================================
+       RESET & BASE STYLES
+       ======================================== */
+    *{box-sizing: border-box; margin: 0; padding: 0;}
+    html, body{
+      height:100%;
+      font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      color: var(--text-color);
+    }
+
+    /* ========================================
+       FULLSCREEN BACKGROUND
+       ======================================== */
+    body{
+      background-image: var(--bg-image);
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start; /* place title closer to the top */
+      padding-top: 20vh; /* adjust vertical distance from top */
+    }
+
+    /* semi-transparent overlay for better contrast */
+    body::before{
+      content:"";
+      position: absolute;
+      inset: 0;
+      background: var(--bg-overlay);
+      z-index: 0;
+    }
+
+    /* ========================================
+       MAIN TITLE
+       ======================================== */
+    h1{
+      position: relative; /* keep above overlay */
+      z-index: 1;
+      font-size: var(--title-font-size);
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      text-align: center;
+      text-shadow: 0 4px 20px rgba(0,0,0,0.6);
+      transition: opacity var(--transition) ease;
+    }
+
+    h1:hover{
+      opacity: 0.9;
+    }
+
+    /* ========================================
+       RESPONSIVE ADJUSTMENTS
+       ======================================== */
+    @media (max-width:600px){
+      body{ padding-top: 25vh; }
+      h1{ font-size: clamp(1.8rem, 6vw, 3rem); }
+    }
+  </style>
+</head>
+<body>
+  <!-- ==========================
+       PAGE CONTENT STARTS HERE
+       ========================== -->
+
+  <!-- Title text (you can change this) -->
+  <h1>In Development</h1>
+
+  <!-- ==========================
+       PAGE CONTENT ENDS HERE
+       ========================== -->
+</body>
+</html>
