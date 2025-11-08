@@ -1,11 +1,24 @@
 {
-  "name": "Mc coin",
+  "name": "MC Coin",
   "symbol": "MCCOIN",
-  "description": "Hats on",
+  "description": "",
   "image": "http://devtwentyseven.github.io/solana/mccoin/icon.png",
+  "animation_url": "https://devtwentyseven.github.io/solana/mccoin/banner.png",
   "banner":"https://devtwentyseven.github.io/solana/mccoin/banner.png",
   "external_url": "https://devtwentyseven.github.io/solana/mccoin",
-  "twitter": "https://x.com/McCoin_HatsOn",
-  "telegram": "https://t.me/mccoin_hatson"
+  "extensions":
+    {
+      "website":"devtwentyseven.github.io",
+      "telegram": "https://t.me/mccoin_hatson",
+      "twitter": "https://x.com/McCoin_HatsOn",
+      "github":"https://github.com/DevTwentySeven",
+      "whitepaper": "https://devtwentyseven.github.io/solana/mccoin/whitepaper"
+    },
+  "attributes": [
+    {
+      "trait_type": "Dev",
+      "value": "Twenty Seven"
+    }
+  ],
+  "tags":["meme","MC Coin","Hats On"]
 }
-
