@@ -1,11 +1,11 @@
 {
-  "name": "MC Coin",
+  "name": "Mc coin",
   "symbol": "MCCOIN",
   "description": "Hats on",
   "image": "http://devtwentyseven.github.io/solana/mccoin/icon.png",
   "banner":"https://devtwentyseven.github.io/solana/mccoin/banner.png",
   "external_url": "https://devtwentyseven.github.io/solana/mccoin",
-  "twitter": "https://x.com/JustAChillDevv/status/1985776322128335031",
+  "twitter": "https://x.com/McCoin_HatsOn",
   "telegram": "https://t.me/mccoin_hatson"
 }
 
