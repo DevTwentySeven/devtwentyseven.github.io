@@ -4,21 +4,11 @@
   "description": "The official token of the unemployed from the bull market.",
   "image": "http://devtwentyseven.github.io/solana/mccoin/logo.png",
   "animation_url": "https://devtwentyseven.github.io/solana/mccoin/banner.png",
-  "banner":"https://devtwentyseven.github.io/solana/mccoin/banner.png",
-  "external_url": "https://devtwentyseven.github.io/solana/mccoin",
-  "extensions":
-    {
-      "website":"devtwentyseven.github.io",
-      "telegram": "https://t.me/mccoin_hatson",
-      "twitter": "https://x.com/McCoin_HatsOn",
-      "github":"https://github.com/DevTwentySeven",
-      "whitepaper": "https://devtwentyseven.github.io/solana/mccoin/whitepaper"
-    },
-  "attributes": [
-    {
-      "trait_type": "Dev",
-      "value": "Twenty Seven"
-    }
-  ],
-  "tags":["meme","MC Coin","Hats On"]
+  "banner": "https://devtwentyseven.github.io/solana/mccoin/banner.png",
+  "website": "https://devtwentyseven.github.io/solana/mccoin",
+  "whitepaper": "https://devtwentyseven.github.io/solana/mccoin/whitepaper",
+  "twitter": "https://x.com/McCoin_HatsOn",
+  "telegram": "https://t.me/mccoin_hatson",
+  "creator":{"name":"Dev Twenty Seven","site":"https://www.devtwentyseven.github.io/"},
+  "tags":["meme"]
 }
