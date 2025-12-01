@@ -1,0 +1,39 @@
+{
+  "name": "B2 Spirit",
+  "symbol": "B2S",
+  "description": "B2 Spirit | devtwentyseven.github.io/solana/b2s",
+
+  "external_url": "https://x.com/i/communities/1995267132557251020",
+  "website": "https://devtwentyseven.github.io/solana/b2s",
+  "twitter": "https://x.com/i/communities/1995267132557251020",
+  "telegram": "https://t.me/B2Spirit_Portal",
+  "image": "https://devtwentyseven.github.io/solana/b2s/icon.gif",
+  "animation_url": "https://devtwentyseven.github.io/solana/b2s/banner.png",
+  "banner": "https://devtwentyseven.github.io/solana/b2s/banner.png",
+  "background_color": "#000000",
+
+  "seller_fee_basis_points": 200,
+
+  "collection": {
+    "name": "B2 Spirit",
+    "family": "Twenty Seven"
+  },
+
+  "properties": {
+    "files": [
+      {"uri": "https://devtwentyseven.github.io/solana/b2s/icon.gif", "type": "image/gif"},
+      {"uri": "https://devtwentyseven.github.io/solana/b2s/banner.gif", "type": "image/gif"}
+    ],
+    "category": "image",
+    "creators": [
+      {
+        "address": "AyFd7CtSnb6ZNdPw17s2zbjkpe9YqejD2faBFBTN6Gvi",
+        "share": 100
+      }
+    ]
+  },
+
+  "tags": ["B2S", "DeFi"],
+  "license": "CC0",
+  "platform": "Solana"
+}
