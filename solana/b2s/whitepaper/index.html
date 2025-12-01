@@ -1,1 +1,217 @@
-<h1>Whitepaper Page</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="27 Gang" />
+  <link rel="icon" href="../icon.gif" type="image/gif">
+  <title>B2 Spirit</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body, html { height: 100%; font-family: 'Arial', Helvetica, sans-serif; overflow: hidden; }
+
+    .background {
+      background-image: url('bannersite.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      height: 100%;
+      width: 100%;
+      position: fixed;
+      top: 0; left: 0;
+      z-index: -2;
+    }
+
+    .overlay {
+      height: 100%;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.65);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    header {
+      text-align: center;
+      padding: 60px 20px 20px;
+      color: white;
+    }
+    header h1 {
+      font-size: 4.5rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 6px;
+      text-shadow: 0 0 30px rgba(0,0,0,0.9);
+    }
+
+    /* Dark Paper */
+    .paper {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 90%;
+      max-width: 900px;
+      max-height: 85vh;
+      background: rgba(15, 15, 25, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 20px;
+      padding: 40px 50px;
+      color: #e0e0e0;
+      line-height: 1.7;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+      z-index: 10;
+    }
+    .paper h1 { font-size: 2.8rem; text-align: center; margin-bottom: 20px; color: #fff; }
+    .paper h2 { font-size: 1.8rem; margin: 30px 0 15px; color: #00ffcc; }
+    .paper table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+    .paper td { padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .paper td:first-child { font-weight: bold; color: #00ffcc; }
+
+    footer {
+      padding: 30px 20px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      position: relative;
+      z-index: 20;
+    }
+    .btn {
+      padding: 14px 28px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 12px;
+      color: white;
+      font-size: 1.1rem;
+      font-weight: bold;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      min-width: 180px;
+      text-align: center;
+    }
+    .btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-4px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      header h1 { font-size: 2.8rem; }
+      .paper { padding: 30px 25px; width: 95%; }
+      .paper h1 { font-size: 2.2rem; }
+    }
+    @media (max-width: 480px) {
+      header h1 { font-size: 2.2rem; letter-spacing: 3px; }
+      .paper { padding: 20px; border-radius: 15px; }
+      footer { flex-direction: column; align-items: center; }
+      .btn { width: 80%; max-width: 300px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="background"></div>
+
+  <div class="overlay">
+    <header>
+      <h1>B2 Spirit</h1>
+    </header>
+
+<!-- Eng Whitepaper frame -->
+<div class="paper">
+  <h1>B2 SPIRIT<br><small>Whitepaper - Pure Stealth Asset</small></h1>
+  <p><strong>Ticker:</strong> $B2S | <strong>Blockchain:</strong> Solana</p>
+  <p><strong>CA:</strong> </p>
+
+  <h2>Mission</h2>
+  <p>To be the cleanest, fastest, and most undetectable asset in the Solana ecosystem — exactly like the bomber that inspired its name.</p>
+
+  <h2>Inspiration</h2>
+  <p>The B-2 Spirit wasn’t built to be seen.<br>
+  Its silhouette is directly inspired by a peregrine falcon in dive:</p>
+
+  <!-- 1st IMAGE -->
+  <div style="text-align:center; margin:35px 0;">
+    <img src="../falcao.png"
+         alt="Peregrine Falcon Dive"
+         style="max-width:100%; height:auto; border-radius:16px;
+                border:2px solid #00ffcc; box-shadow:0 0 30px rgba(0,255,204,0.4);">
+  </div>
+
+  <p>terminal velocity, near-zero radar signature, and the ability to operate in hostile territory without detection.</p>
+
+  <!-- 2nd IMAGE -->
+  <div style="text-align:center; margin:35px 0;">
+    <img src="../b2.png"
+         alt="B-2 Spirit Stealth"
+         style="max-width:100%; height:auto; border-radius:16px;
+                border:2px solid #00ffcc; box-shadow:0 0 30px rgba(0,255,204,0.4);">
+  </div>
+
+  <p><strong>$B2S embodies the same philosophy:</strong></p>
+  <ul>
+    <li>Fixed and scarce supply</li>
+    <li>15% initial burn</li>
+    <li>Minimal 0.27% transfer tax (anti-bundler only)</li>
+    <li>100% organic growth, no hidden allocations or overhyped promises</li>
+  </ul>
+
+  <!-- tokenomics -->
+  <h2>Tokenomics</h2>
+  <table>
+    <tr><td>Name</td><td>B2 Spirit</td></tr>
+    <tr><td>Symbol</td><td>$B2S</td></tr>
+    <tr><td>Total Supply</td><td>2,000,000,000 $B2S</td><td>Fixed & immutable</td></tr>
+    <tr><td>Initial Burn</td><td>300,000,000 $B2S (15%)</td><td>Executed at launch – public burn address</td></tr>
+    <tr><td>Circulating Supply</td><td>1,700,000,000 $B2S</td></tr>
+    <tr><td>Distribution</td><td>90% added to liquidity at launch</td></tr>
+    <tr><td>Dev Allocation</td><td>10%</td><td>Used to control initial volatility</td></tr>
+    <tr><td>Transfer Tax</td><td>0.27%</td><td>Technical anti-bundler only</td></tr>
+    <tr><td>Liquidity</td><td>100% locked</td></tr>
+    <tr><td>Mint Authority</td><td>Revoked</td></tr>
+    <tr><td>Freeze Authority</td><td>Revoked</td></tr>
+  </table>
+
+  <h2>Transfer Tax (0.27%)</h2>
+  <p>Only active anti-bot measure at launch.<br>
+  Applied on transfers only (not on DEX buy/sell).<br>
+  Collected amount follows Solana standard: validator rewards and mempool maintenance.<br>
+  Future use or reinvestment will be directed towards the development of the asset.</p>
+
+  <h2>Roadmap</h2>
+  <p><strong>Phase 0 – Stealth Launch (completed)</strong><br>
+  Deploy → 15% burn → 90% to liquidity → LP locked → authorities revoked.</p>
+  <p><strong>Phase 1 – Organic Momentum (0–90 days)</strong><br>
+  Growth via Stealth Squadron (Telegram + X), natural visibility on DexScreener, Jupiter, Birdeye.</p>
+  <p><strong>Phase 2 – Institutional Altitude (90–180 days)</strong><br>
+  Tier-1 CEX listings only when organic volume and holders justify it.</p>
+  <p><strong>Phase 3 – Legacy</strong><br>
+  $B2S established as the gold standard of flawless 2025–2026 launches.</p>
+
+  <h2>Official Links</h2>
+  <p>Website: https://devtwentyseven.github.io/solana/b2s<br>
+  X Community: https://x.com/i/communities/1995267132557251020<br>
+  Telegram: https://t.me/B2Spirit_Portal</p>
+
+  <h2>Final Statement</h2>
+  <p>The B-2 Spirit doesn’t announce its arrival.<br>
+  It simply shows up where they least expect it.<br><br>
+  <strong>Welcome to $B2S.</strong></p>
+</div>
+
+    <footer>
+      <a href="https://devtwentyseven.github.io/solana/b2s" class="btn">Home</a>
+      <a href="https://x.com/i/communities/1995267132557251020" target="_blank" class="btn">Twitter</a>
+      <a href="https://t.me/B2Spirit_Portal" target="_blank" class="btn">Telegram</a>
+      <a href="https://solscan.io/token/SEU_TOKEN_AQUI" target="_blank" class="btn">Explorer Solana</a>
+    </footer>
+  </div>
+
+</body>
+</html>
