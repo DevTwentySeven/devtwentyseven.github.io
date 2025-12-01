@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="27 Gang" />
+  <link rel="icon" href="icon.gif" type="image/gif">
+  <title>B2 Spirit</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body, html {
+      height: 100%;
+      font-family: 'Arial', sans-serif;
+      overflow: hidden;
+    }
+
+    .background {
+      background-image: url('bannersite.png'); /* <<< TROCA AQUI PELA TUA IMAGEM */
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      height: 100%;
+      width: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+
+    .overlay {
+      height: 100%;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.65); /* escurece um pouco pra destacar o texto */
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    header {
+      text-align: center;
+      padding: 60px 20px 20px;
+      color: white;
+    }
+
+    header h1 {
+      font-size: 4rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      text-shadow: 0 0 20px rgba(0,0,0,0.8);
+    }
+
+    footer {
+      padding: 30px 20px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    .btn {
+      padding: 14px 28px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 12px;
+      color: white;
+      font-size: 1.1rem;
+      font-weight: bold;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      min-width: 180px;
+      text-align: center;
+    }
+
+    .btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-4px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+    }
+
+    /* Responsivo pra celular */
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: 2.5rem;
+      }
+      .btn {
+        min-width: 140px;
+        padding: 12px 20px;
+        font-size: 1rem;
+      }
+      footer {
+        gap: 12px;
+        padding: 20px 10px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      header h1 {
+        font-size: 2rem;
+      }
+      footer {
+        flex-direction: column;
+        align-items: center;
+      }
+      .btn {
+        width: 80%;
+        max-width: 300px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="background"></div>
+
+  <div class="overlay">
+    <header>
+      <h1>B2 Spirit</h1> <!-- <<< TROCA AQUI O TÍTULO -->
+      <h3>CA: </h3>
+    </header>
+
+    <footer>
+      <a href="https://devtwentyseven.github.io/solana/b2s/whitepaper" target="_blank" class="btn">Whitepaper</a>
+      <a href="https://x.com/i/communities/1995267132557251020" target="_blank" class="btn">Twitter</a>
+      <a href="https://t.me/B2Spirit_Portal" target="_blank" class="btn">Telegram</a>
+      <a href="https://solscan.io/token/SEU_TOKEN_AQUI" target="_blank" class="btn">Explorer Solana</a>
+    </footer>
+  </div>
+
+</body>
+</html>
