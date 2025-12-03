@@ -12,13 +12,10 @@
       padding: 0;
       box-sizing: border-box;
     }
-
     body, html {
-      height: 100%;
+      min-height: 100vh;
       font-family: 'Arial', sans-serif;
-      overflow: hidden;
     }
-
     .background {
       background-image: url('bannersite.png'); /* <<< Banner */
       background-size: cover;
@@ -31,22 +28,18 @@
       left: 0;
       z-index: -1;
     }
-
     .overlay {
-      height: 100%;
+      min-height: 100vh;
       width: 100%;
       background: rgba(0, 0, 0, 0.65); /* dark text */
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
     }
-
     header {
       text-align: center;
       padding: 60px 20px 20px;
       color: white;
     }
-
     header h1 {
       font-size: 4rem;
       font-weight: 900;
@@ -54,15 +47,20 @@
       letter-spacing: 4px;
       text-shadow: 0 0 20px rgba(0,0,0,0.8);
     }
-
+    main {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 2px;
+    }
     footer {
+      margin-top: auto;
       padding: 30px 20px;
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
       gap: 15px;
     }
-
     .btn {
       padding: 14px 28px;
       background: rgba(255, 255, 255, 0.15);
@@ -77,13 +75,11 @@
       min-width: 180px;
       text-align: center;
     }
-
     .btn:hover {
       background: rgba(255, 255, 255, 0.3);
       transform: translateY(-4px);
       box-shadow: 0 10px 20px rgba(0,0,0,0.4);
     }
-
     /* Smartphone responsive */
     @media (max-width: 768px) {
       header h1 {
@@ -99,7 +95,6 @@
         padding: 20px 10px;
       }
     }
-
     @media (max-width: 480px) {
       header h1 {
         font-size: 2rem;
@@ -113,18 +108,19 @@
         max-width: 300px;
       }
     }
+    #dexscreener-embed{position:relative;width:98%;margin:0 auto;padding-bottom:10%;}@media(min-width:300px){#dexscreener-embed{padding-bottom:35%;}}#dexscreener-embed iframe{position:absolute;width:100%;height:100%;top:0;left:0;border:0;}
   </style>
 </head>
 <body>
-
   <div class="background"></div>
-
   <div class="overlay">
     <header>
       <h1>B2 Spirit</h1> <!-- <<< Title -->
       <h3>CA: EdCfWrzDvb1ViGSTWLbf1hawdpVNjtGTxTHmEyGrn8p7</h3>
     </header>
-
+    <main>
+      <div id="dexscreener-embed"><iframe src="https://dexscreener.com/solana/8DKyksVapJxqXRDb4RUs32367CSQmz8gBwvFppz7rBpP?embed=1&loadChartSettings=1&trades=0&tabs=0&info=0&chartLeftToolbar=1&chartDefaultOnMobile=1&chartTheme=dark&theme=dark&chartStyle=1&chartType=marketCap&interval=1s"></iframe></div>
+    </main>
     <footer>
       <a href="https://devtwentyseven.github.io/solana/b2s/whitepaper" class="btn">Whitepaper</a>
       <a href="https://x.com/i/communities/1995267132557251020" target="_blank" class="btn">Twitter</a>
@@ -132,9 +128,7 @@
       <a href="https://dexscreener.com/solana/8dkyksvapjxqxrdb4rus32367csqmz8gbwvfppz7rbpp" target="_blank" class="btn">DexScreener</a>
       <a href="https://jup.ag/tokens/EdCfWrzDvb1ViGSTWLbf1hawdpVNjtGTxTHmEyGrn8p7" target="_blank" class="btn">Jupiter</a>
       <a href="https://fluxbeam.xyz/EdCfWrzDvb1ViGSTWLbf1hawdpVNjtGTxTHmEyGrn8p7" target="_blank" class="btn">Fluxbeam</a>
-      
     </footer>
   </div>
-
 </body>
 </html>
