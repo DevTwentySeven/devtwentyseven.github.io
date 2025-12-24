@@ -2,24 +2,10 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>DEX Solana Otimizada</title>
+    <title>Dex Jupiter</title>
     <style>
-        body {
-            background-color: #0f172a;
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            font-family: sans-serif;
-        }
-        #integrated-terminal {
-            width: 420px;
-            height: 600px;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
-            border-radius: 16px;
-        }
+        body { background-color: #0f172a; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        #integrated-terminal { width: 400px; height: 560px; border-radius: 16px; overflow: hidden; }
     </style>
 </head>
 <body>
@@ -27,34 +13,28 @@
     <div id="integrated-terminal"></div>
 
     <script src="https://terminal.jup.ag/main-v3.js"></script>
-
     <script>
-        // 1. GERE UMA NOVA CHAVE NA HELIUS, A ANTIGA FOI EXPOSTA!
-        const HELIUS_API_KEY = "26112beb-3aae-4f65-ac09-1e6f745d30de";
-        const HELIUS_RPC_URL = `https://mainnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}`;
+        // COLOQUE SUA NOVA CHAVE AQUI
+        const HELIUS_RPC = "https://mainnet.helius-rpc.com/?api-key=26112beb-3aae-4f65-ac09-1e6f745d30de";
 
-        window.Jupiter.init({
-            displayMode: "integrated",
-            integratedTargetId: "integrated-terminal",
-            endpoint: HELIUS_RPC_URL,
-
-            // --- A CORREÇÃO ESTÁ AQUI ---
-            // 'true' carrega apenas moedas verificadas (rápido e sem bugs).
-            // 'false' tenta carregar tudo e trava o navegador.
-            strictTokenList: true,
-
-            // Estilos visuais para corrigir bugs de renderização
-            containerStyles: { zIndex: 100 },
-
-            formProps: {
-                // Se quiser forçar o token USDC como saída, descomente abaixo:
-                initialInputMint: "So11111111111111111111111111111111111111111",
-                initialOutputMint: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
-
-                // Força o valor de slippage padrão (proteção)
-                initialSlippageBps: 50, // 0.5%
-            },
-        });
+        // Função de inicialização com atraso para garantir carregamento
+        setTimeout(() => {
+            if (window.Jupiter) {
+                window.Jupiter.init({
+                    displayMode: "integrated",
+                    integratedTargetId: "integrated-terminal",
+                    endpoint: HELIUS_RPC,
+                    strictTokenList: true, // Essencial para não travar
+                    defaultExplorer: "Solscan",
+                    formProps: {
+                        initialSlippageBps: 50,
+                    },
+                });
+            } else {
+                console.error("Jupiter script não carregou. Verifique seu DNS.");
+                document.getElementById('integrated-terminal').innerHTML = "<p style='color:white;text-align:center'>Erro de conexão. Verifique seu DNS ou AdBlock.</p>";
+            }
+        }, 1000); // Espera 1 segundo antes de iniciar
     </script>
 
 </body>
