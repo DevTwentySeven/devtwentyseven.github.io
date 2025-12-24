@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>DEX Solana com Helius</title>
+    <title>DEX Solana Otimizada</title>
     <style>
         body {
             background-color: #0f172a;
@@ -14,7 +14,6 @@
             margin: 0;
             font-family: sans-serif;
         }
-        /* Container do Widget */
         #integrated-terminal {
             width: 420px;
             height: 600px;
@@ -30,18 +29,30 @@
     <script src="https://terminal.jup.ag/main-v3.js"></script>
 
     <script>
-        // COLOQUE SUA CHAVE DA HELIUS AQUI
+        // 1. GERE UMA NOVA CHAVE NA HELIUS, A ANTIGA FOI EXPOSTA!
         const HELIUS_API_KEY = "26112beb-3aae-4f65-ac09-1e6f745d30de";
         const HELIUS_RPC_URL = `https://mainnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}`;
 
         window.Jupiter.init({
             displayMode: "integrated",
             integratedTargetId: "integrated-terminal",
-            // Aqui definimos que o Jupiter deve usar SEU RPC da Helius
             endpoint: HELIUS_RPC_URL,
+
+            // --- A CORREÇÃO ESTÁ AQUI ---
+            // 'true' carrega apenas moedas verificadas (rápido e sem bugs).
+            // 'false' tenta carregar tudo e trava o navegador.
+            strictTokenList: true,
+
+            // Estilos visuais para corrigir bugs de renderização
+            containerStyles: { zIndex: 100 },
+
             formProps: {
-                // Opcional: Moeda fixa de saída (Ex: USDC)
-                // initialOutputMint: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+                // Se quiser forçar o token USDC como saída, descomente abaixo:
+                initialInputMint: "So11111111111111111111111111111111111111111",
+                initialOutputMint: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+
+                // Força o valor de slippage padrão (proteção)
+                initialSlippageBps: 50, // 0.5%
             },
         });
     </script>
